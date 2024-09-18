@@ -10,8 +10,8 @@ package main
 import "C"
 
 import (
-	"fmt"
 	"runtime"
+	"unsafe"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
 )
@@ -24,17 +24,16 @@ func main() {
 	C.glfwInit()
 	defer C.glfwTerminate()
 
-	var major, minor, rev C.int
-	C.glfwGetVersion(&major, &minor, &rev)
-	fmt.Println("GLFW Version", major, minor, rev)
-
 	C.glfwWindowHint(C.GLFW_CONTEXT_VERSION_MAJOR, 3)
 	C.glfwWindowHint(C.GLFW_CONTEXT_VERSION_MINOR, 3)
 	C.glfwWindowHint(C.GLFW_OPENGL_PROFILE, C.GLFW_OPENGL_CORE_PROFILE)
 	C.glfwWindowHint(C.GLFW_OPENGL_FORWARD_COMPAT, C.GLFW_TRUE)
 	C.glfwWindowHint(C.GLFW_VISIBLE, C.GLFW_FALSE)
 
-	window, err := C.glfwCreateWindow(1280, 720, C.CString("Demo"), nil, nil)
+	// title := C.CString("Demo")
+	title := (*C.char)(unsafe.Pointer(unsafe.StringData("Demo\x00")))
+
+	window, err := C.glfwCreateWindow(1280, 720, title, nil, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -52,8 +51,8 @@ func main() {
 		mode := C.glfwGetVideoMode(primary)
 		if mode != nil {
 			var x, y C.int
-			C.glfwGetWindowPos(window, &x, &y)
-			C.glfwSetWindowPos(window, x+(mode.width-1280)/2, y+(mode.height-720)/2)
+			C.glfwGetWindowSize(window, &x, &y)
+			C.glfwSetWindowPos(window, (mode.width/2)-(x/2), (mode.height/2)-(y/2))
 		}
 	}
 
@@ -86,20 +85,3 @@ func main() {
 	C.ImGui_ImplGlfw_Shutdown()
 	C.igDestroyContext(ctx)
 }
-
-// #if IMGUI_HAS_DOCK
-// ctx->IO.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-// ctx->IO.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-// ctx->IO.ConfigDockingWithShift = true;
-// #endif
-
-// igDockSpaceOverViewport(0, NULL, ImGuiDockNodeFlags_PassthruCentralNode, NULL);
-
-// #if IMGUI_HAS_DOCK
-// if (ctx->IO.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-// 	GLFWwindow *previous = glfwGetCurrentContext();
-// 	igUpdatePlatformWindows();
-// 	igRenderPlatformWindowsDefault(NULL, NULL);
-// 	glfwMakeContextCurrent(previous);
-// }
-// #endif

@@ -1,12 +1,64 @@
 package main
 
-// #cgo CFLAGS: -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 -DCIMGUI_USE_GLFW -DCIMGUI_USE_OPENGL3
-// #cgo LDFLAGS: -Lbuild -Lbuild/glfw/src -Lbuild/glad -lcimgui -lglfw3 -lglad
-// #cgo LDFLAGS: -lopengl32 -lgdi32 -lc++ -lc++abi
-// #cgo CFLAGS: -I. -Iglfw/include
-// #include "cimgui/cimgui.h"
-// #include "cimgui/generator/output/cimgui_impl.h"
-// #include "glfw/include/GLFW/glfw3.h"
+/*
+#cgo CFLAGS: -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 -DCIMGUI_USE_GLFW -DCIMGUI_USE_OPENGL3
+#cgo CPPFLAGS: -Ithirdparty/cimgui/imgui -Ithirdparty/glfw/include
+#include "thirdparty/cimgui/cimgui.h"
+#include "thirdparty/cimgui/generator/output/cimgui_impl.h"
+#include "thirdparty/glfw/include/GLFW/glfw3.h"
+//#cgo CPPFLAGS: -DIMGUI_IMPL_API=\"extern\\\t\\\"C\\\"\" -DIMGUI_IMPL_OPENGL_LOADER_GLAD
+
+// GLFW below
+
+// Windows Build Tags
+// ----------------
+// GLFW Options:
+#cgo windows CFLAGS: -D_GLFW_WIN32 -Ithirdparty/glfw/deps/mingw
+
+// Linker Options:
+#cgo windows LDFLAGS: -lgdi32
+
+#cgo !gles2,windows LDFLAGS: -lopengl32
+#cgo gles2,windows LDFLAGS: -lGLESv2
+
+// Darwin Build Tags
+// ----------------
+// GLFW Options:
+#cgo darwin CFLAGS: -D_GLFW_COCOA -Wno-deprecated-declarations
+
+// Linker Options:
+#cgo darwin LDFLAGS: -framework Cocoa -framework IOKit -framework CoreVideo
+
+#cgo !gles2,darwin LDFLAGS: -framework OpenGL
+#cgo gles2,darwin LDFLAGS: -lGLESv2
+
+// Linux Build Tags
+// ----------------
+// GLFW Options:
+#cgo linux,!wayland CFLAGS: -D_GLFW_X11
+#cgo linux,wayland CFLAGS: -D_GLFW_WAYLAND -D_GNU_SOURCE
+
+// Linker Options:
+#cgo linux,!gles1,!gles2,!gles3,!vulkan LDFLAGS: -lGL
+#cgo linux,gles1 LDFLAGS: -lGLESv1
+#cgo linux,gles2 LDFLAGS: -lGLESv2
+#cgo linux,gles3 LDFLAGS: -lGLESv3
+#cgo linux,vulkan LDFLAGS: -lvulkan
+#cgo linux,!wayland LDFLAGS: -lX11 -lXrandr -lXxf86vm -lXi -lXcursor -lm -lXinerama -ldl -lrt
+#cgo linux,wayland LDFLAGS: -lwayland-client -lwayland-cursor -lwayland-egl -lxkbcommon -lm -ldl -lrt
+
+// BSD Build Tags
+// ----------------
+// GLFW Options:
+#cgo freebsd,!wayland netbsd,!wayland openbsd pkg-config: x11 xau xcb xdmcp
+#cgo freebsd,wayland netbsd,wayland pkg-config: wayland-client wayland-cursor wayland-egl epoll-shim
+#cgo freebsd netbsd openbsd CFLAGS: -D_GLFW_HAS_DLOPEN
+#cgo freebsd,!wayland netbsd,!wayland openbsd CFLAGS: -D_GLFW_X11 -D_GLFW_HAS_GLXGETPROCADDRESSARB
+#cgo freebsd,wayland netbsd,wayland CFLAGS: -D_GLFW_WAYLAND
+
+// Linker Options:
+#cgo freebsd netbsd openbsd LDFLAGS: -lm
+*/
 import "C"
 
 import (
@@ -61,6 +113,8 @@ func main() {
 	ctx := C.igCreateContext(nil)
 	C.ImGui_ImplGlfw_InitForOpenGL(window, true)
 	C.ImGui_ImplOpenGL3_Init(C.CString("#version 330 core"))
+
+	ctx.IO.IniFilename = nil
 
 	for C.glfwWindowShouldClose(window) != C.GLFW_TRUE {
 		C.glfwPollEvents()

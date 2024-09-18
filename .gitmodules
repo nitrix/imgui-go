@@ -1,9 +1,9 @@
 [submodule "cimgui"]
-	path = cimgui
+	path = thirdparty/cimgui
 	url = https://github.com/cimgui/cimgui
 [submodule "glfw"]
-	path = glfw
+	path = thirdparty/glfw
 	url = https://github.com/glfw/glfw
 [submodule "glad"]
-	path = glad
+	path = thirdparty/glad
 	url = https://github.com/nitrix/glad

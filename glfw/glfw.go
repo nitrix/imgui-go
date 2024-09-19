@@ -1,6 +1,6 @@
 package glfw
 
-// #cgo CFLAGS: -I../thirdparty/glfw/include
+// #cgo CFLAGS: -I../dist/include
 // #cgo windows LDFLAGS: -L../dist/windows
 // #cgo windows LDFLAGS: -lopengl32 -lgdi32
 // #cgo LDFLAGS: -lglfw3

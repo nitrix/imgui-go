@@ -1,10 +1,10 @@
 package imgui
 
-// #cgo CFLAGS: -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 -DCIMGUI_USE_GLFW
+// #cgo CFLAGS: -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 -DCIMGUI_USE_GLFW -I ../dist/include
 // #cgo windows LDFLAGS: -L../dist/windows
 // #cgo LDFLAGS: -lcimgui -static -lc++ -lc++abi
-// #include "../thirdparty/cimgui/cimgui.h"
-// #include "../thirdparty/cimgui/generator/output/cimgui_impl.h"
+// #include "cimgui/cimgui.h"
+// #include "cimgui/cimgui_impl.h"
 import "C"
 
 import (

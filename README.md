@@ -6,7 +6,7 @@ A binding for imgui in Go.
 
 ![example.png](example.png)
 
-Try the example with `go run github.com/nitrix/imgui-go/example`.
+Try the example with `go run github.com/nitrix/imgui-go/example@latest`.
 
 The sources for it are located here [example/example.go](example/example.go).
 
@@ -33,7 +33,7 @@ cd ..
 Then moved to their appropriate location with:
 
 ```
-go generate
+go run ./generate
 ```
 
 The process has to be repeated on every supported platform.

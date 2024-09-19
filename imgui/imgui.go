@@ -1,9 +1,9 @@
 package imgui
 
-// #cgo CFLAGS: -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1
+// #cgo CFLAGS: -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 -I../dist/include
 // #cgo windows LDFLAGS: -L../dist/windows
 // #cgo LDFLAGS: -lcimgui -static -lc++ -lc++abi
-// #include "../thirdparty/cimgui/cimgui.h"
+// #include "cimgui/cimgui.h"
 import "C"
 
 import (

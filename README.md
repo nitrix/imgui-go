@@ -2,21 +2,21 @@
 
 A binding for imgui in Go.
 
-## Preview
+## Example
 
-![preview.png](preview.png)
+![example.png](example.png)
+
+Try the example with `go run github.com/nitrix/imgui-go/example`.
+
+The sources for it are located here [example/example.go](example/example.go).
 
 ## Status
 
 Still very much a proof-of-concept. It's missing the GitHub actions + binaries for linux and mac.
 
-## Usage
+## Important
 
-Try the example with `go run github.com/nitrix/imgui-go/example`.
-
-The sources for it are here [example/example.go](example/example.go).
-
-You're limited to using OpenGL and GLFW. The glfw has must be the bindings provided in this repo, `github.com/go-gl/glfw` isn't recent enough and will panic at runtime on unknown enums.
+You're limited to using OpenGL and GLFW. The glfw bindings have to the ones provided in this repo as popular alternatives (like `github.com/go-gl/glfw`) aren't recent enough for the imgui backends to work and will panic at runtime on unknown enums.
 
 ## Maintainers
 
@@ -30,11 +30,13 @@ ninja
 cd ..
 ```
 
-then moved to their appropriate location with:
+Then moved to their appropriate location with:
 
 ```
 go generate
 ```
+
+The process has to be repeated on every supported platform.
 
 ## License
 

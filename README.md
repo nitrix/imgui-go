@@ -1,6 +1,6 @@
 # imgui-go
 
-A no-binding approach to imgui in Go.
+A binding for imgui in Go.
 
 ## Preview
 

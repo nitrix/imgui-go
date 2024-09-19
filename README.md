@@ -13,6 +13,7 @@ The sources for it are located here [example/example.go](example/example.go).
 ## Status
 
 Still very much a proof-of-concept. It's missing the GitHub actions + binaries for linux and mac.
+The bindings are also written manually on a need basis.
 
 ## Important
 

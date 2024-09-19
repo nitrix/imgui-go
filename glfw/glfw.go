@@ -1,8 +1,9 @@
 package glfw
 
 // #cgo CFLAGS: -I../thirdparty/glfw/include
-// #cgo LDFLAGS: -L../build/thirdparty/glfw/src -lglfw3
+// #cgo windows LDFLAGS: -L../dist/windows
 // #cgo windows LDFLAGS: -lopengl32 -lgdi32
+// #cgo LDFLAGS: -lglfw3
 // #include "GLFW/glfw3.h"
 // #include <stdlib.h>
 import "C"

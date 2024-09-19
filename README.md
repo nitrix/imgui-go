@@ -6,7 +6,19 @@ A binding for imgui in Go.
 
 ![preview.png](preview.png)
 
-## Generation
+## Status
+
+Still very much a proof-of-concept. It's missing the GitHub actions + binaries for linux and mac.
+
+## Usage
+
+Try the example with `go run github.com/nitrix/imgui-go/example`.
+
+The sources for it are here [example/example.go](example/example.go).
+
+You're limited to using OpenGL and GLFW. The glfw has must be the bindings provided in this repo, `github.com/go-gl/glfw` isn't recent enough and will panic at runtime on unknown enums.
+
+## Maintainers
 
 The binaries inside of `dist` are compiled using CMake with:
 
@@ -23,12 +35,6 @@ then moved to their appropriate location with:
 ```
 go generate
 ```
-
-## Usage
-
-See the [example/example.go](example/example.go) file for how to use the library.
-
-You're limited to OpenGL and GLFW. The glfw bindings must be the ones provided in this repo, `github.com/go-gl/glfw` isn't recent enough and will panic at runtime on unknown enums.
 
 ## License
 

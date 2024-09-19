@@ -3,26 +3,26 @@ PROJECT(cimgui-go)
 
 SET(CMAKE_CXX_STANDARD 17)
 
-ADD_SUBDIRECTORY(glfw)
-ADD_SUBDIRECTORY(glad)
+ADD_SUBDIRECTORY(thirdparty/glfw)
+ADD_SUBDIRECTORY(thirdparty/glad)
 
 FILE(GLOB
     cimgui_files
-    "cimgui/*.cpp"
-    "cimgui/imgui/*.cpp"
-    "cimgui/imgui/backends/imgui_impl_glfw.cpp"
-    "cimgui/imgui/backends/imgui_impl_opengl3.cpp"
+    "thirdparty/cimgui/*.cpp"
+    "thirdparty/cimgui/imgui/*.cpp"
+    "thirdparty/cimgui/imgui/backends/imgui_impl_glfw.cpp"
+    "thirdparty/cimgui/imgui/backends/imgui_impl_opengl3.cpp"
 )
 
 ADD_LIBRARY(cimgui ${cimgui_files})
 
 TARGET_COMPILE_DEFINITIONS(cimgui PRIVATE IMGUI_IMPL_API=extern\ \"C\")
 TARGET_COMPILE_DEFINITIONS(cimgui PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
-TARGET_INCLUDE_DIRECTORIES(cimgui PRIVATE cimgui/imgui cimgui/imgui/backends)
+TARGET_INCLUDE_DIRECTORIES(cimgui PRIVATE thirdparty/cimgui/imgui thirdparty/cimgui/imgui/backends)
 TARGET_COMPILE_DEFINITIONS(cimgui PUBLIC CIMGUI_USE_GLFW CIMGUI_USE_OPENGL3)
 TARGET_LINK_LIBRARIES(cimgui PRIVATE stdc++)
-TARGET_INCLUDE_DIRECTORIES(cimgui PUBLIC cimgui/generator/output)
-TARGET_INCLUDE_DIRECTORIES(cimgui PUBLIC cimgui)
+TARGET_INCLUDE_DIRECTORIES(cimgui PUBLIC thirdparty/cimgui/generator/output)
+TARGET_INCLUDE_DIRECTORIES(cimgui PUBLIC thirdparty/cimgui)
 TARGET_LINK_LIBRARIES(cimgui PRIVATE glfw glad)
 TARGET_COMPILE_DEFINITIONS(cimgui INTERFACE CIMGUI_DEFINE_ENUMS_AND_STRUCTS)
 TARGET_COMPILE_DEFINITIONS(cimgui INTERFACE IMGUI_DISABLE_OBSOLETE_FUNCTIONS)

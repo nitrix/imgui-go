@@ -10,14 +10,15 @@ Try the example with `go run github.com/nitrix/cimgui-go/example@latest`.
 
 The sources for it are located here [example/example.go](example/example.go).
 
-## Status
+## Progress
 
-Still very much a proof-of-concept. It's missing the GitHub actions + binaries for linux and mac.  
-The bindings are also written manually on a need basis.
+The bindings are written manually on an "as-needed" basis. 
+The GLFW API is kept intentionally compatible with `github.com/go-gl/glfw`.
 
 ## Important
 
-You're limited to using OpenGL and GLFW. The glfw bindings have to the ones provided in this repo as popular alternatives (like `github.com/go-gl/glfw`) aren't recent enough for the imgui backends to work and will panic at runtime on unknown enums.
+You're currently limited to using the OpenGL and GLFW backends. The GLFW window must be created with this library
+because the backends rely on recently added enums that not all other popular bindings support.
 
 ## Maintainers
 

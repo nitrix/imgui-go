@@ -83,7 +83,7 @@ jobs:
 
   macOSamd64:
     name: MacOS (amd64)
-    runs-on: macos-latest
+    runs-on: macos-latest-large
     steps:
       - name: Checkout
         uses: actions/checkout@v4

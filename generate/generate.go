@@ -35,6 +35,4 @@ func main() {
 	copyFile("thirdparty/glad/include/glad.h", "dist/include/glad/glad.h")
 	copyFile("thirdparty/cimgui/cimgui.h", "dist/include/cimgui/cimgui.h")
 	copyFile("thirdparty/cimgui/generator/output/cimgui_impl.h", "dist/include/cimgui/cimgui_impl.h")
-
-	doPlatformSpecific()
 }

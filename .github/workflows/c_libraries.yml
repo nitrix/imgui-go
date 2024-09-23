@@ -1,6 +1,9 @@
+name: C libraries
+
 on:
-  push:
-    # Run manually with GitHub actions.
+  # Run manually with GitHub actions.
+  workflow_dispatch:
+  #push:
     # branches:
     #  - master
 

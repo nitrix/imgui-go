@@ -5,6 +5,9 @@ package imgui
 // #cgo linux LDFLAGS: -L../dist/linux
 // #cgo windows LDFLAGS: -lcimgui -static -lc++ -lc++abi
 // #cgo linux LDFLAGS: -lcimgui -lm -lc++
+// #cgo darwin,amd64 LDFLAGS: -L../dist/macos/amd64
+// #cgo darwin,arm64 LDFLAGS: -L../dist/macos/arm64
+// #cgo darwin -lcimgui -framework CoreFoundation
 // #include "cimgui/cimgui.h"
 // #include "cimgui/cimgui_impl.h"
 import "C"

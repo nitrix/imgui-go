@@ -3,8 +3,11 @@ package imgui
 // #cgo CFLAGS: -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 -I../dist/include
 // #cgo windows LDFLAGS: -L../dist/windows
 // #cgo linux LDFLAGS: -L../dist/linux
-// #cgo windows LDFLAGS: -lcimgui -static -lc++ -lc++abi
+// #cgo windows LDFLAGS: -lcimgui -limm32 -static -lc++ -lc++abi
 // #cgo linux LDFLAGS: -lcimgui -lm -lc++
+// #cgo darwin,amd64 LDFLAGS: -L../dist/macos/amd64
+// #cgo darwin,arm64 LDFLAGS: -L../dist/macos/arm64
+// #cgo darwin -lcimgui -framework CoreFoundation
 // #include "cimgui/cimgui.h"
 import "C"
 

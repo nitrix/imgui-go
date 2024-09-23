@@ -1,4 +1,4 @@
-module github.com/nitrix/imgui-go
+module github.com/nitrix/cimgui-go
 
 go 1.23.1
 

@@ -82,7 +82,7 @@ jobs:
           retention-days: 1
 
   macOSamd64:
-    name: MacOS amd64
+    name: MacOS (amd64)
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -123,7 +123,7 @@ jobs:
           retention-days: 1
           
   macOSarm64:
-    name: MacOS arm64
+    name: MacOS (arm64)
     runs-on: macos-latest-xlarge
     steps:
       - name: Checkout

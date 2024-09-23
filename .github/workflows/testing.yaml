@@ -21,7 +21,7 @@ jobs:
         run: go version
       - name: Build
         run: |
-          go build -ldflags="-s -w" ./example
+          go build -ldflags="-s -w" -o poc ./example
 
   linux:
     name: Linux
@@ -42,10 +42,10 @@ jobs:
         run: go version
       - name: Build
         run: |
-          go build -ldflags="-s -w" ./example
+          go build -ldflags="-s -w" -o poc ./example
 
   macOSamd64:
-    name: MacOS amd64
+    name: MacOS (amd64)
     runs-on: macos-latest-large
     steps:
       - name: Checkout
@@ -59,10 +59,10 @@ jobs:
         run: go version
       - name: Build
         run: |
-          go build -ldflags="-s -w" ./example
+          go build -ldflags="-s -w" -o poc ./example
 
   macOSarm64:
-    name: MacOS arm64
+    name: MacOS (arm64)
     runs-on: macos-latest-xlarge
     steps:
       - name: Checkout
@@ -76,4 +76,4 @@ jobs:
         run: go version
       - name: Build
         run: |
-          go build -ldflags="-s -w" ./example
+          go build -ldflags="-s -w" -o poc ./example

@@ -22,7 +22,7 @@ func main() {
 	glfw.WindowHint(glfw.ContextVersionMajor, 3)
 	glfw.WindowHint(glfw.ContextVersionMinor, 3)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
-	glfw.WindowHint(glfw.OpenGLForwardCompat, glfw.True)
+	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 	glfw.WindowHint(glfw.Visible, glfw.False)
 
 	window, err := glfw.CreateWindow(1280, 720, "Demo", nil, nil)
@@ -31,7 +31,7 @@ func main() {
 	}
 	defer window.Destroy()
 
-	glfw.MakeContextCurrent(window)
+	window.MakeContextCurrent()
 
 	if err := gl.Init(); err != nil {
 		panic(err)

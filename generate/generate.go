@@ -28,3 +28,13 @@ func copyFile(src, dst string) error {
 
 	return nil
 }
+
+func main() {
+	copyFile("thirdparty/glfw/include/GLFW/glfw3.h", "dist/include/GLFW/glfw3.h")
+	copyFile("thirdparty/glfw/include/GLFW/glfw3native.h", "dist/include/GLFW/glfw3native.h")
+	copyFile("thirdparty/glad/include/glad.h", "dist/include/glad/glad.h")
+	copyFile("thirdparty/cimgui/cimgui.h", "dist/include/cimgui/cimgui.h")
+	copyFile("thirdparty/cimgui/generator/output/cimgui_impl.h", "dist/include/cimgui/cimgui_impl.h")
+
+	doPlatformSpecific()
+}

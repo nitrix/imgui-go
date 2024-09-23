@@ -3,6 +3,7 @@ package glfw
 // #cgo CFLAGS: -I../dist/include
 // #cgo windows LDFLAGS: -L../dist/windows
 // #cgo windows LDFLAGS: -lopengl32 -lgdi32
+// #cgo linux LDFLAGS: -L../dist/linux
 // #cgo LDFLAGS: -lglfw3
 // #include "GLFW/glfw3.h"
 // #include <stdlib.h>

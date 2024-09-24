@@ -1,12 +1,12 @@
-# cimgui-go
+# imgui-go
 
-A binding for cimgui in Go.
+A binding for imgui in Go.
 
 ## Example
 
 ![example.png](example.png)
 
-Try the example with `go run github.com/nitrix/cimgui-go/example@latest`.
+Try the example with `go run github.com/nitrix/imgui-go/example@latest`.
 
 The sources for it are located here [example/example.go](example/example.go).
 

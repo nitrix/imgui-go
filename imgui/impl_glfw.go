@@ -13,7 +13,7 @@ package imgui
 import "C"
 
 import (
-	"github.com/nitrix/cimgui-go/glfw"
+	"github.com/nitrix/imgui-go/glfw"
 )
 
 func ImplGlfw_Init(window *glfw.Window) {

@@ -17,18 +17,6 @@ import (
 	"unsafe"
 )
 
-const (
-	ContextVersionMajor     = C.GLFW_CONTEXT_VERSION_MAJOR
-	ContextVersionMinor     = C.GLFW_CONTEXT_VERSION_MINOR
-	OpenGLProfile           = C.GLFW_OPENGL_PROFILE
-	OpenGLCoreProfile       = C.GLFW_OPENGL_CORE_PROFILE
-	OpenGLForwardCompatible = C.GLFW_OPENGL_FORWARD_COMPAT
-	Visible                 = C.GLFW_VISIBLE
-	Samples                 = C.GLFW_SAMPLES
-	True                    = C.GLFW_TRUE
-	False                   = C.GLFW_FALSE
-)
-
 type Monitor C.GLFWmonitor
 
 type Window struct {

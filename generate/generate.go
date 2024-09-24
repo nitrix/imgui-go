@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
+
+	"github.com/iancoleman/strcase"
 )
 
 func copyFile(src, dst string) error {
@@ -29,10 +33,59 @@ func copyFile(src, dst string) error {
 	return nil
 }
 
+func extractGlfwConstants() []string {
+	out := []string{}
+
+	content, err := os.ReadFile("thirdparty/glfw/include/GLFW/glfw3.h")
+	if err != nil {
+		panic(err)
+	}
+
+	renameConstant := func(name string) string {
+		name = strcase.ToCamel(name)
+		name = strings.ReplaceAll(name, "Opengl", "OpenGL")
+		if name == "OpenGLForwardCompat" {
+			return "OpenGLForwardCompatible"
+		}
+		return name
+	}
+
+	lines := strings.Split(string(content), "\n")
+	for _, line := range lines {
+		if strings.HasPrefix(line, "#define GLFW_") {
+			line = strings.TrimSpace(line)
+			line = strings.ReplaceAll(line, "\t", " ")
+			for {
+				before := line
+				line = strings.ReplaceAll(line, "  ", " ")
+				if before == line {
+					break
+				}
+			}
+
+			parts := strings.Split(line, " ")
+			_, err := strconv.Atoi(parts[2])
+			if err == nil || strings.HasPrefix(parts[2], "0x") {
+				out = append(out, fmt.Sprintf("const %s = %s", renameConstant(strings.TrimPrefix(parts[1], "GLFW_")), parts[2]))
+			}
+		}
+	}
+
+	return out
+}
+
 func main() {
 	copyFile("thirdparty/glfw/include/GLFW/glfw3.h", "dist/include/GLFW/glfw3.h")
 	copyFile("thirdparty/glfw/include/GLFW/glfw3native.h", "dist/include/GLFW/glfw3native.h")
 	copyFile("thirdparty/glad/include/glad.h", "dist/include/glad/glad.h")
 	copyFile("thirdparty/cimgui/cimgui.h", "dist/include/cimgui/cimgui.h")
 	copyFile("thirdparty/cimgui/generator/output/cimgui_impl.h", "dist/include/cimgui/cimgui_impl.h")
+
+	glfwConstants := extractGlfwConstants()
+	err := os.WriteFile("glfw/constants.go", []byte("package glfw\n\n"+strings.Join(glfwConstants, "\n")), 0644)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Written %d constants to glfw/key_constants.go\n", len(glfwConstants))
 }

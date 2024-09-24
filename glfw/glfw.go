@@ -10,12 +10,21 @@ package glfw
 // void glfwSetCursorPosCallback_fix(GLFWwindow *window);
 // void glfwSetWindowSizeCallback_fix(GLFWwindow *window);
 // void glfwSetFramebufferSizeCallback_fix(GLFWwindow *window);
+// void glfwSetKeyCallback_fix(GLFWwindow *window);
+// void glfwSetMouseButtonCallback_fix(GLFWwindow *window);
+// void glfwSetScrollCallback_fix(GLFWwindow *window);
 import "C"
 
 import (
 	"fmt"
 	"unsafe"
 )
+
+type MouseButton int
+type Key int
+type Scancode int
+type Action int
+type ModifierKey int
 
 type Monitor C.GLFWmonitor
 
@@ -25,6 +34,9 @@ type Window struct {
 	cursorPosCallback       func(ww *Window, x float64, y float64)
 	sizeCallback            func(ww *Window, x int, y int)
 	framebuffersizeCallback func(ww *Window, x int, y int)
+	keyCallback             func(ww *Window, key Key, scancode Scancode, action Action, mods ModifierKey)
+	mouseButtonCallback     func(ww *Window, button MouseButton, action Action, mods ModifierKey)
+	scrollCallback          func(ww *Window, xoff float64, yoff float64)
 }
 
 type VideoMode struct {
@@ -48,6 +60,24 @@ func goSizeCallback(w *C.GLFWwindow, width, height C.int) {
 func goFramebufferSizeCallback(w *C.GLFWwindow, width, height C.int) {
 	real := (*Window)(C.glfwGetWindowUserPointer(w))
 	real.framebuffersizeCallback(real, int(width), int(height))
+}
+
+//export goKeyCallback
+func goKeyCallback(w *C.GLFWwindow, key C.int, scancode C.int, action C.int, mods C.int) {
+	real := (*Window)(C.glfwGetWindowUserPointer(w))
+	real.keyCallback(real, Key(key), Scancode(scancode), Action(action), ModifierKey(mods))
+}
+
+//export goMouseButtonCallback
+func goMouseButtonCallback(w *C.GLFWwindow, button C.int, action C.int, mods C.int) {
+	real := (*Window)(C.glfwGetWindowUserPointer(w))
+	real.mouseButtonCallback(real, MouseButton(button), Action(action), ModifierKey(mods))
+}
+
+//export goScrollCallback
+func goScrollCallback(w *C.GLFWwindow, xoff, yoff C.double) {
+	real := (*Window)(C.glfwGetWindowUserPointer(w))
+	real.scrollCallback(real, float64(xoff), float64(yoff))
 }
 
 func Init() error {
@@ -82,12 +112,18 @@ func CreateWindow(width, height int, title string, monitor *Monitor, share *Wind
 		cursorPosCallback:       func(w *Window, x float64, y float64) {},
 		sizeCallback:            func(w *Window, x int, y int) {},
 		framebuffersizeCallback: func(w *Window, x int, y int) {},
+		keyCallback:             func(w *Window, key Key, scancode Scancode, action Action, mods ModifierKey) {},
+		mouseButtonCallback:     func(w *Window, button MouseButton, action Action, mods ModifierKey) {},
+		scrollCallback:          func(w *Window, xoff float64, yoff float64) {},
 	}
 
 	C.glfwSetWindowUserPointer(handle, unsafe.Pointer(window))
 	C.glfwSetCursorPosCallback_fix(handle)
 	C.glfwSetWindowSizeCallback_fix(handle)
 	C.glfwSetFramebufferSizeCallback_fix(handle)
+	C.glfwSetKeyCallback_fix(handle)
+	C.glfwSetMouseButtonCallback_fix(handle)
+	C.glfwSetScrollCallback_fix(handle)
 
 	return window, nil
 }
@@ -156,6 +192,18 @@ func (w *Window) SetSizeCallback(f func(ww *Window, width int, height int)) {
 
 func (w *Window) SetFramebufferSizeCallback(f func(ww *Window, width int, height int)) {
 	w.framebuffersizeCallback = f
+}
+
+func (w *Window) SetKeyCallback(f func(ww *Window, key Key, scancode Scancode, action Action, mods ModifierKey)) {
+	w.keyCallback = f
+}
+
+func (w *Window) SetMouseButtonCallback(f func(ww *Window, button MouseButton, action Action, mods ModifierKey)) {
+	w.mouseButtonCallback = f
+}
+
+func (w *Window) SetScrollCallback(f func(ww *Window, xoff float64, yoff float64)) {
+	w.scrollCallback = f
 }
 
 func (w *Window) GetFramebufferSize() (int, int) {

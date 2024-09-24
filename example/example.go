@@ -53,6 +53,8 @@ func main() {
 	imgui.ImplOpenGL3_Init(window)
 	defer imgui.ImplOpenGL3_Shutdown()
 
+	registerCallbacks(ctx, window)
+
 	window.Centerize()
 	window.Show()
 
@@ -73,4 +75,49 @@ func main() {
 
 		window.SwapBuffers()
 	}
+}
+
+func registerCallbacks(ctx *imgui.Context, window *glfw.Window) {
+	/*
+		window.SetKeyCallback(func(w *glfw.Window, key glfw.Key, scancode glfw.Scancode, action glfw.Action, mods glfw.ModifierKey) {
+			if ctx.IO.WantCaptureKeyboard {
+				return
+			}
+
+			if key == glfw.KeyEscape && action == glfw.Press {
+				w.SetShouldClose(true)
+			}
+		})
+
+		window.SetMouseButtonCallback(func(w *glfw.Window, button glfw.MouseButton, action glfw.Action, mods glfw.ModifierKey) {
+			if ctx.IO.WantCaptureMouse {
+				return
+			}
+
+			if button == glfw.MouseButtonLeft && action == glfw.Press {
+				x, y := w.GetCursorPos()
+				fmt.Println("Clicked at:", x, y)
+			}
+		})
+
+		window.SetScrollCallback(func(w *glfw.Window, xoff float64, yoff float64) {
+			if ctx.IO.WantCaptureMouse {
+				return
+			}
+
+			fmt.Println("Scrolled:", xoff, yoff)
+		})
+
+		window.SetCursorPosCallback(func(w *glfw.Window, x float64, y float64) {
+			if ctx.IO.WantCaptureMouse {
+				return
+			}
+
+			fmt.Println("Cursor at:", x, y)
+		})
+	*/
+
+	window.SetFramebufferSizeCallback(func(w *glfw.Window, width int, height int) {
+		gl.Viewport(0, 0, int32(width), int32(height))
+	})
 }

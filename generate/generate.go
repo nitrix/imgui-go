@@ -50,6 +50,8 @@ func extractGlfwConstants() []string {
 		return name
 	}
 
+	knownConstants := map[string]string{}
+
 	lines := strings.Split(string(content), "\n")
 	for _, line := range lines {
 		if strings.HasPrefix(line, "#define GLFW_") {
@@ -66,7 +68,10 @@ func extractGlfwConstants() []string {
 			parts := strings.Split(line, " ")
 			_, err := strconv.Atoi(parts[2])
 			if err == nil || strings.HasPrefix(parts[2], "0x") {
+				knownConstants[parts[1]] = parts[2]
 				out = append(out, fmt.Sprintf("const %s = %s", renameConstant(strings.TrimPrefix(parts[1], "GLFW_")), parts[2]))
+			} else if knownConstants[parts[2]] != "" {
+				out = append(out, fmt.Sprintf("const %s = %s", renameConstant(strings.TrimPrefix(parts[1], "GLFW_")), knownConstants[parts[2]]))
 			}
 		}
 	}

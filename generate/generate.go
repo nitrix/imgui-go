@@ -69,9 +69,11 @@ func extractGlfwConstants() []string {
 			_, err := strconv.Atoi(parts[2])
 			if err == nil || strings.HasPrefix(parts[2], "0x") {
 				knownConstants[parts[1]] = parts[2]
-				out = append(out, fmt.Sprintf("const %s = %s", renameConstant(strings.TrimPrefix(parts[1], "GLFW_")), parts[2]))
+				// out = append(out, fmt.Sprintf("const %s = %s", renameConstant(strings.TrimPrefix(parts[1], "GLFW_")), parts[2]))
+				out = append(out, fmt.Sprintf("const %s = %s", renameConstant(strings.TrimPrefix(parts[1], "GLFW_")), "C."+parts[1]))
 			} else if knownConstants[parts[2]] != "" {
-				out = append(out, fmt.Sprintf("const %s = %s", renameConstant(strings.TrimPrefix(parts[1], "GLFW_")), knownConstants[parts[2]]))
+				// out = append(out, fmt.Sprintf("const %s = %s", renameConstant(strings.TrimPrefix(parts[1], "GLFW_")), knownConstants[parts[2]]))
+				out = append(out, fmt.Sprintf("const %s = %s", renameConstant(strings.TrimPrefix(parts[1], "GLFW_")), "C."+parts[1]))
 			}
 		}
 	}
@@ -79,18 +81,32 @@ func extractGlfwConstants() []string {
 	return out
 }
 
-func main() {
+func generateHeaders() {
 	copyFile("thirdparty/glfw/include/GLFW/glfw3.h", "dist/include/GLFW/glfw3.h")
 	copyFile("thirdparty/glfw/include/GLFW/glfw3native.h", "dist/include/GLFW/glfw3native.h")
 	copyFile("thirdparty/glad/include/glad.h", "dist/include/glad/glad.h")
 	copyFile("thirdparty/cimgui/cimgui.h", "dist/include/cimgui/cimgui.h")
 	copyFile("thirdparty/cimgui/generator/output/cimgui_impl.h", "dist/include/cimgui/cimgui_impl.h")
+}
+
+func generateGlfwConstants() {
+	preamble := "package glfw\n"
+	preamble += "\n"
+	preamble += "// #cgo CFLAGS: -I../dist/include\n"
+	preamble += "// #include \"GLFW/glfw3.h\"\n"
+	preamble += "import \"C\"\n"
+	preamble += "\n"
 
 	glfwConstants := extractGlfwConstants()
-	err := os.WriteFile("glfw/constants.go", []byte("package glfw\n\n"+strings.Join(glfwConstants, "\n")), 0644)
+	err := os.WriteFile("glfw/constants.go", []byte(preamble+strings.Join(glfwConstants, "\n")), 0644)
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Printf("Written %d constants to glfw/key_constants.go\n", len(glfwConstants))
+}
+
+func main() {
+	generateHeaders()
+	generateGlfwConstants()
 }

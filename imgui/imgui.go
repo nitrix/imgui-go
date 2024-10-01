@@ -9,11 +9,14 @@ package imgui
 // #cgo darwin,arm64 LDFLAGS: -L../dist/macos/arm64
 // #cgo darwin LDFLAGS: -lcimgui -framework CoreFoundation -lc++ -framework OpenGL -framework Cocoa -framework IOKit -framework QuartzCore
 // #include "cimgui/cimgui.h"
+// #include <stdlib.h>
 import "C"
 
 import (
 	"fmt"
 )
+
+var stringPool StringPool
 
 type Context C.ImGuiContext
 type DrawData C.ImDrawData
@@ -31,11 +34,25 @@ func (ctx *Context) Destroy() {
 }
 
 func NewFrame() {
+	stringPool.Reset()
 	C.igNewFrame()
 }
 
 func ShowDemoWindow() {
 	C.igShowDemoWindow(nil)
+}
+
+func Begin(name string, open *bool, flags int) bool {
+	s := stringPool.StoreCString(name)
+	return (bool)(C.igBegin(s, (*C.bool)(open), (C.ImGuiWindowFlags)(flags)))
+
+	// str := C.CString(name)
+	// defer C.free(unsafe.Pointer(str))
+	// return (bool)(C.igBegin(str, (*C.bool)(open), (C.ImGuiWindowFlags)(flags)))
+}
+
+func End() {
+	C.igEnd()
 }
 
 func GetDrawData() *DrawData {

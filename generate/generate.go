@@ -106,7 +106,63 @@ func generateGlfwConstants() {
 	fmt.Printf("Written %d constants to glfw/key_constants.go\n", len(glfwConstants))
 }
 
+func extractImguiConstants() []string {
+	out := []string{}
+
+	content, err := os.ReadFile("thirdparty/cimgui/cimgui.h")
+	if err != nil {
+		panic(err)
+	}
+
+	lines := strings.Split(string(content), "\n")
+	within := false
+	num := 0
+
+	for _, line := range lines {
+		line := strings.TrimSpace(line)
+
+		if !within && line == "typedef enum {" {
+			within = true
+			num = 0
+		} else if within && strings.HasPrefix(line, "}") {
+			within = false
+		} else if within {
+			line = strings.TrimSuffix(line, ",")
+			line = strings.ReplaceAll(line, "(int)", "")
+			line = strings.ReplaceAll(line, "ImGui", "")
+			parts := strings.Split(line, "=")
+			if len(parts) == 2 {
+				k := parts[0]
+				v := parts[1]
+				k = strings.TrimSpace(k)
+				v = strings.TrimSpace(v)
+				v = strings.ReplaceAll(v, "~", "^")
+				out = append(out, fmt.Sprintf("const %s = %s", k, v))
+			} else {
+				out = append(out, fmt.Sprintf("const %s = %d", parts[0], num))
+				num++
+			}
+		}
+	}
+
+	return out
+}
+
+func generateImguiConstants() {
+	preamble := "package imgui\n"
+	preamble += "\n"
+
+	imguiConstants := extractImguiConstants()
+	err := os.WriteFile("imgui/constants.go", []byte(preamble+strings.Join(imguiConstants, "\n")), 0644)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Written %d constants to imgui/constants.go\n", len(imguiConstants))
+}
+
 func main() {
 	generateHeaders()
 	generateGlfwConstants()
+	generateImguiConstants()
 }

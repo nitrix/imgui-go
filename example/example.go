@@ -25,7 +25,7 @@ func main() {
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 	glfw.WindowHint(glfw.Visible, glfw.False)
 
-	window, err := glfw.CreateWindow(1280, 720, "Demo", nil, nil)
+	window, err := glfw.CreateWindow(1280, 720, "Example", nil, nil)
 	if err != nil {
 		panic(err)
 	}

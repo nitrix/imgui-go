@@ -76,6 +76,7 @@ func main() {
 		imgui.DockSpaceOverViewport(0, nil, imgui.DockNodeFlags_PassthruCentralNode, nil)
 
 		imgui.ShowDemoWindow()
+
 		imgui.Render()
 
 		if ctx.IO.ConfigFlags&imgui.ConfigFlags_ViewportsEnable > 0 {

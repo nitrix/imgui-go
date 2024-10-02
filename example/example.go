@@ -46,6 +46,9 @@ func main() {
 	defer ctx.Destroy()
 
 	ctx.IO.IniFilename = nil
+	ctx.IO.ConfigFlags |= imgui.ConfigFlags_ViewportsEnable
+	ctx.IO.ConfigFlags |= imgui.ConfigFlags_DockingEnable
+	ctx.IO.ConfigDockingWithShift = true
 
 	imgui.ImplGlfw_Init(window)
 	defer imgui.ImplGlfw_Shutdown()
@@ -70,8 +73,17 @@ func main() {
 		imgui.ImplOpenGL3_NewFrame()
 		imgui.NewFrame()
 
+		imgui.DockSpaceOverViewport(0, nil, imgui.DockNodeFlags_PassthruCentralNode, nil)
+
 		imgui.ShowDemoWindow()
 		imgui.Render()
+
+		if ctx.IO.ConfigFlags&imgui.ConfigFlags_ViewportsEnable > 0 {
+			previous := glfw.GetCurrentContext()
+			imgui.UpdatePlatformWindows()
+			imgui.RenderPlatformWindowsDefault(nil, nil)
+			previous.MakeContextCurrent()
+		}
 
 		imgui.ImplOpenGL3_RenderDrawData(imgui.GetDrawData())
 

@@ -140,6 +140,13 @@ func DetachCurrentContext() {
 	C.glfwMakeContextCurrent(nil)
 }
 
+func GetCurrentContext() *Window {
+	fakeWindow := Window{}
+	handle := C.glfwGetCurrentContext()
+	fakeWindow.handle = handle
+	return &fakeWindow
+}
+
 func GetPrimaryMonitor() *Monitor {
 	return (*Monitor)(C.glfwGetPrimaryMonitor())
 }

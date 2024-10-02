@@ -14,6 +14,7 @@ import "C"
 
 import (
 	"fmt"
+	"unsafe"
 )
 
 var stringPool StringPool
@@ -53,6 +54,18 @@ func Begin(name string, open *bool, flags int) bool {
 
 func End() {
 	C.igEnd()
+}
+
+func DockSpaceOverViewport(dockspaceID C.ImGuiID, viewport *C.ImGuiViewport, flags C.ImGuiDockNodeFlags, windowClass *C.ImGuiWindowClass) {
+	C.igDockSpaceOverViewport(dockspaceID, viewport, flags, windowClass)
+}
+
+func UpdatePlatformWindows() {
+	C.igUpdatePlatformWindows()
+}
+
+func RenderPlatformWindowsDefault(platformArg unsafe.Pointer, rendererArg unsafe.Pointer) {
+	C.igRenderPlatformWindowsDefault(platformArg, rendererArg)
 }
 
 func GetDrawData() *DrawData {

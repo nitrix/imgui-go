@@ -198,19 +198,19 @@ jobs:
         id: cimgui-changes
         run: |
           git reset --hard
-          git rev-parse HEAD:thirdparty/cimgui > dist/cimgui.txt
+          git rev-parse HEAD:thirdparty/cimgui > dist/git/cimgui.txt
           git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
       - name: Detect glad changes
         id: glad-changes
         run: |
           git reset --hard
-          git rev-parse HEAD:thirdparty/glad > dist/glad.txt
+          git rev-parse HEAD:thirdparty/glad > dist/git/glad.txt
           git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
       - name: Detect glfw changes
         id: glfw-changes
         run: |
           git reset --hard
-          git rev-parse HEAD:thirdparty/glfw > dist/glfw.txt
+          git rev-parse HEAD:thirdparty/glfw > dist/git/glfw.txt
           git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
       - name: Create dist folders
         run: |
@@ -241,9 +241,9 @@ jobs:
           cp downloads/macos/arm64/libglfw3.a dist/macos/arm64/libglfw3.a
       - name: Update commit tracking files
         run: |
-          git rev-parse HEAD:thirdparty/cimgui > dist/cimgui.txt
-          git rev-parse HEAD:thirdparty/glad > dist/glad.txt
-          git rev-parse HEAD:thirdparty/glfw > dist/glfw.txt
+          git rev-parse HEAD:thirdparty/cimgui > dist/git/cimgui.txt
+          git rev-parse HEAD:thirdparty/glad > dist/git/glad.txt
+          git rev-parse HEAD:thirdparty/glfw > dist/git/glfw.txt
       - name: Detect git changes
         id: git-changes
         run: |

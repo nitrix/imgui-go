@@ -212,6 +212,12 @@ jobs:
           git reset --hard
           git rev-parse HEAD:thirdparty/glfw > dist/glfw.txt
           git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
+      - name: Create dist folders
+        run: |
+          mkdir -p dist/windows
+          mkdir -p dist/linux
+          mkdir -p dist/macos/amd64
+          mkdir -p dist/macos/arm64
       - name: Update cimgui
         if: steps.cimgui-changes.outputs.changed == 'true'
         run: |

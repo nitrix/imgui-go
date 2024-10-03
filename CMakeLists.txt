@@ -12,12 +12,6 @@ SET(GLFW_INSTALL OFF)
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 
-# On MacOS, disable codesigning to get reproducible builds.
-IF(APPLE)
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-no_adhoc_codesign")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-no_adhoc_codesign")
-ENDIF()
-
 ADD_SUBDIRECTORY(thirdparty/glfw)
 ADD_SUBDIRECTORY(thirdparty/glad)
 

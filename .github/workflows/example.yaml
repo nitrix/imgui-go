@@ -46,7 +46,7 @@ jobs:
 
   macOSamd64:
     name: MacOS (amd64)
-    runs-on: macos-latest-large
+    runs-on: macos-13
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -63,7 +63,7 @@ jobs:
 
   macOSarm64:
     name: MacOS (arm64)
-    runs-on: macos-latest-xlarge
+    runs-on: macos-14
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -28,6 +28,6 @@ func ImplOpenGL3_Shutdown() {
 	C.ImGui_ImplOpenGL3_Shutdown()
 }
 
-func ImplOpenGL3_RenderDrawData(d *DrawData) {
-	C.ImGui_ImplOpenGL3_RenderDrawData((*C.ImDrawData)(d))
+func ImplOpenGL3_RenderDrawData(d *C.ImDrawData) {
+	C.ImGui_ImplOpenGL3_RenderDrawData(d)
 }

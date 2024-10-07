@@ -166,40 +166,35 @@ func generateImguiConstants() {
 
 func convertGoTypeToCgoType(goType string) string {
 	switch goType {
+	case "int":
+		return "C.int"
+	case "bool":
+		return "C.bool"
 	case "*bool":
 		return "*C.bool"
+	case "float32":
+		return "C.float"
+	case "uint32":
+		return "C.ImU32"
 	case "unsafe.Pointer":
 		return "*C.void"
-	case "*DrawData":
-		return "*C.ImDrawData"
-
-	case "ID":
-		return "C.ImGuiID"
-	case "*Viewport":
-		return "*C.ImGuiViewport"
-	case "DockNodeFlags":
-		return "C.ImGuiDockNodeFlags"
-	case "*WindowClass":
-		return "*C.ImGuiWindowClass"
-	case "WindowFlags":
-		return "C.ImGuiWindowFlags"
-	case "*Context":
-		return "*C.ImGuiContext"
-	case "*Style":
-		return "*C.ImGuiStyle"
-	case "ChildFlags":
-		return "C.ImGuiChildFlags"
-	case "FocusedFlags":
-		return "C.ImGuiFocusedFlags"
-	default:
-		panic("Unknown Go type to convert to Cgo type: " + goType)
 	}
+
+	if strings.HasPrefix(goType, "C.Im") || strings.HasPrefix(goType, "*C.Im") {
+		return goType
+	}
+
+	panic("Unknown Go type to convert to Cgo type: " + goType)
 }
 
 func convertCTypeToGoType(cType string) string {
 	cType = strings.TrimPrefix(cType, "const ")
 
 	switch cType {
+	case "int":
+		return "int"
+	case "float":
+		return "float32"
 	case "bool":
 		return "bool"
 	case "bool *":
@@ -208,18 +203,22 @@ func convertCTypeToGoType(cType string) string {
 		return "unsafe.Pointer"
 	case "char *":
 		return "string"
+	case "ImU32":
+		return "uint32"
 	case "ImVec2":
 		return "mgl32.Vec2"
-	case "ImDrawData *":
-		return "*DrawData"
+	case "ImVec3":
+		return "mgl32.Vec3"
+	case "ImVec4":
+		return "mgl32.Vec4"
 	}
 
-	if strings.HasPrefix(cType, "ImGui") {
-		cType = strings.TrimPrefix(cType, "ImGui")
+	if strings.HasPrefix(cType, "ImGui") || strings.HasPrefix(cType, "ImDraw") || strings.HasPrefix(cType, "ImFont") {
 		if strings.HasSuffix(cType, "*") {
-			cType = "*" + strings.TrimSpace(strings.TrimSuffix(cType, "*"))
+			return "*C." + strings.TrimSpace(strings.TrimSuffix(cType, "*"))
+		} else {
+			return "C." + strings.TrimSpace(cType)
 		}
-		return cType
 	}
 
 	panic("Unknown C type to convert to Go type: " + cType)
@@ -300,19 +299,8 @@ func generateImguiFunctions() {
 		if strings.HasPrefix(line, "CIMGUI_API") {
 			prototype := cparser.ParsePrototype(line)
 
-			fmt.Println("=>", prototype.Name)
-
 			blacklist := []string{
-				"igCreateContext",
-				"igDestroyContext",
 				"igNewFrame",
-
-				"ImVec2_ImVec2_Nil",
-				"ImVec2_ImVec2_Float",
-				"ImVec2_destroy",
-				"ImVec4_ImVec4_Nil",
-				"ImVec4_ImVec4_Float",
-				"ImVec4_destroy",
 			}
 
 			whitelist := []string{
@@ -387,9 +375,16 @@ func generateImguiFunctions() {
 
 				output.WriteString("\t")
 
+				parensReturn := false
+
 				if prototype.ReturnType != "void" {
 					output.WriteString("return ")
-					output.WriteString(fmt.Sprintf("(%s)(", convertCTypeToGoType(prototype.ReturnType)))
+					goType := convertCTypeToGoType(prototype.ReturnType)
+					cgoType := convertGoTypeToCgoType(goType)
+					if goType != cgoType {
+						output.WriteString(fmt.Sprintf("(%s)(", goType))
+						parensReturn = true
+					}
 				}
 
 				if variadic {
@@ -417,13 +412,25 @@ func generateImguiFunctions() {
 						continue
 					}
 
-					if param.Ty == "const ImVec2" {
+					if param.Ty == "ImVec2" || param.Ty == "const ImVec2" {
 						output.WriteString(fmt.Sprintf("C.ImVec2{C.float(%s.X()), C.float(%s.Y())}", param.Name, param.Name))
+						continue
+					}
+
+					if param.Ty == "ImVec3" || param.Ty == "const ImVec3" {
+						output.WriteString(fmt.Sprintf("C.ImVec3{C.float(%s.X()), C.float(%s.Y()), C.float(%s.Z())}", param.Name, param.Name, param.Name))
+						continue
+					}
+
+					if param.Ty == "ImVec4" || param.Ty == "const ImVec4" {
+						output.WriteString(fmt.Sprintf("C.ImVec4{C.float(%s.X()), C.float(%s.Y()), C.float(%s.Z()), C.float(%s.W())}", param.Name, param.Name, param.Name, param.Name))
 						continue
 					}
 
 					cgoType := convertGoTypeToCgoType(convertCTypeToGoType(param.Ty))
 					if cgoType == "*C.void" {
+						output.WriteString(param.Name)
+					} else if cgoType == convertCTypeToGoType(param.Ty) {
 						output.WriteString(param.Name)
 					} else {
 						output.WriteString(fmt.Sprintf("(%s)(%s)", cgoType, param.Name))
@@ -431,7 +438,7 @@ func generateImguiFunctions() {
 				}
 				output.WriteString(")")
 
-				if prototype.ReturnType != "void" {
+				if parensReturn {
 					output.WriteString(")")
 				}
 

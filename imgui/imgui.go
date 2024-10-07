@@ -12,23 +12,7 @@ package imgui
 // #include <stdlib.h>
 import "C"
 
-import (
-	"fmt"
-)
-
 var stringPool StringPool
-
-func CreateContext() (*Context, error) {
-	ctx := C.igCreateContext(nil)
-	if ctx == nil {
-		return nil, fmt.Errorf("failed to create context")
-	}
-	return (*Context)(ctx), nil
-}
-
-func (ctx *Context) Destroy() {
-	C.igDestroyContext((*C.ImGuiContext)(ctx))
-}
 
 func NewFrame() {
 	stringPool.Reset()

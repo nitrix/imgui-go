@@ -39,11 +39,11 @@ func main() {
 
 	glfw.SwapInterval(1)
 
-	ctx, err := imgui.CreateContext()
-	if err != nil {
+	ctx := imgui.CreateContext(nil)
+	if ctx == nil {
 		panic(err)
 	}
-	defer ctx.Destroy()
+	defer imgui.DestroyContext(ctx)
 
 	ctx.IO.IniFilename = nil
 	ctx.IO.ConfigFlags |= imgui.ConfigFlags_ViewportsEnable

@@ -478,7 +478,7 @@ func generateImguiFunctions() {
 
 	secondary := strings.Builder{}
 	secondary.WriteString("#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS 1\n")
-	secondary.WriteString("#include \"../thirdparty/cimgui/cimgui.h\"\n")
+	secondary.WriteString("#include \"cimgui/cimgui.h\"\n")
 	secondary.WriteString("\n")
 
 	for i, wrapperDef := range wrapperDefs {

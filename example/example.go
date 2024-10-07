@@ -43,7 +43,7 @@ func main() {
 
 	ctx := imgui.CreateContext(nil)
 	if ctx == nil {
-		panic(err)
+		panic("CreateContext failed")
 	}
 	defer imgui.DestroyContext(ctx)
 

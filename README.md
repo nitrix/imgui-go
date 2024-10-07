@@ -12,13 +12,12 @@ The sources for it are located here [example/example.go](example/example.go).
 
 ## Progress
 
-The bindings are written manually on an "as-needed" basis. 
-The GLFW API is kept intentionally compatible with `github.com/go-gl/glfw`.
+The bindings are still very limited. The generator needs to be re-written to handle many conversion edge cases.
 
 ## Important
 
-You're currently limited to using the OpenGL and GLFW backends. The GLFW window must be created with this library
-because the backends rely on recently added enums that not all other popular bindings support.
+You're currently limited to using the OpenGL and GLFW backends. The GLFW window must be created by [this other library](https://github.com/nitrix/glfw-go)
+because the backends rely on recently added enums that not all the other popular bindings support.
 
 ## License
 

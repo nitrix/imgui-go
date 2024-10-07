@@ -35,8 +35,6 @@ func copyFile(src, dst string) error {
 }
 
 func generateHeaders() {
-	copyFile("thirdparty/glad/include/glad/glad.h", "dist/include/glad/glad.h")
-	copyFile("thirdparty/glad/include/KHR/khrplatform.h", "dist/include/KHR/khrplatform.h")
 	copyFile("thirdparty/cimgui/cimgui.h", "dist/include/cimgui/cimgui.h")
 	copyFile("thirdparty/cimgui/generator/output/cimgui_impl.h", "dist/include/cimgui/cimgui_impl.h")
 }

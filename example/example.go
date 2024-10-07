@@ -6,6 +6,8 @@ import (
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/nitrix/glfw-go"
 	"github.com/nitrix/imgui-go"
+	bglfw "github.com/nitrix/imgui-go/backends/glfw"
+	bopengl3 "github.com/nitrix/imgui-go/backends/opengl3"
 )
 
 func init() {
@@ -50,11 +52,11 @@ func main() {
 	ctx.IO.ConfigFlags |= imgui.ConfigFlags_DockingEnable
 	ctx.IO.ConfigDockingWithShift = true
 
-	imgui.ImplGlfw_Init(window)
-	defer imgui.ImplGlfw_Shutdown()
+	bglfw.Init(window)
+	defer bglfw.Shutdown()
 
-	imgui.ImplOpenGL3_Init(window)
-	defer imgui.ImplOpenGL3_Shutdown()
+	bopengl3.Init(window)
+	defer bopengl3.Shutdown()
 
 	window.SetFramebufferSizeCallback(func(w *glfw.Window, width int, height int) {
 		gl.Viewport(0, 0, int32(width), int32(height))
@@ -69,8 +71,8 @@ func main() {
 		gl.ClearColor(0.1, 0.1, 0.1, 1.0)
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
-		imgui.ImplGlfw_NewFrame()
-		imgui.ImplOpenGL3_NewFrame()
+		bglfw.NewFrame()
+		bopengl3.NewFrame()
 		imgui.NewFrame()
 
 		imgui.DockSpaceOverViewport(0, nil, imgui.DockNodeFlags_PassthruCentralNode, nil)
@@ -89,7 +91,7 @@ func main() {
 			previous.MakeContextCurrent()
 		}
 
-		imgui.ImplOpenGL3_RenderDrawData(imgui.GetDrawData())
+		bopengl3.RenderDrawData(imgui.GetDrawData())
 
 		window.SwapBuffers()
 	}

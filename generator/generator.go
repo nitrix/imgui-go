@@ -108,6 +108,22 @@ func convertGoTypeToCgoType(goType string) string {
 		return "C.ImU32"
 	case "unsafe.Pointer":
 		return "*C.void"
+	case "*Context":
+		return "*C.ImGuiContext"
+	case "*FontAtlas":
+		return "*C.ImFontAtlas"
+	case "*DrawData":
+		return "*C.ImDrawData"
+	case "WindowFlags":
+		return "C.ImGuiWindowFlags"
+	case "ID":
+		return "C.ImGuiID"
+	case "*Viewport":
+		return "*C.ImGuiViewport"
+	case "DockNodeFlags":
+		return "C.ImGuiDockNodeFlags"
+	case "*WindowClass":
+		return "*C.ImGuiWindowClass"
 	}
 
 	if strings.HasPrefix(goType, "C.Im") || strings.HasPrefix(goType, "*C.Im") {
@@ -144,10 +160,13 @@ func convertCTypeToGoType(cType string) string {
 	}
 
 	if strings.HasPrefix(cType, "ImGui") || strings.HasPrefix(cType, "ImDraw") || strings.HasPrefix(cType, "ImFont") {
+		cType = strings.TrimPrefix(cType, "ImGui")
+		cType = strings.TrimPrefix(cType, "Im")
+
 		if strings.HasSuffix(cType, "*") {
-			return "*C." + strings.TrimSpace(strings.TrimSuffix(cType, "*"))
+			return "*" + strings.TrimSpace(strings.TrimSuffix(cType, "*"))
 		} else {
-			return "C." + strings.TrimSpace(cType)
+			return strings.TrimSpace(cType)
 		}
 	}
 
@@ -300,7 +319,7 @@ func generateImguiFunctions() {
 
 				// ================== Generate the function call ==================
 				if variadic {
-					output.WriteString("\ts := stringPool.StoreCString(gofmt.Sprintf(fmt, args...))\n")
+					output.WriteString("\tvariadic := stringPool.StoreCString(gofmt.Sprintf(fmt, args...))\n")
 				}
 
 				output.WriteString("\t")
@@ -333,7 +352,7 @@ func generateImguiFunctions() {
 					}
 
 					if variadic && i == len(prototype.Parameters)-2 {
-						output.WriteString("s")
+						output.WriteString("variadic")
 						break
 					}
 

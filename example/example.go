@@ -75,7 +75,10 @@ func main() {
 
 		imgui.DockSpaceOverViewport(0, nil, imgui.DockNodeFlags_PassthruCentralNode, nil)
 
-		imgui.ShowDemoWindow()
+		imgui.ShowDemoWindow(nil)
+
+		// Ignore this, it's just how I test the wrapped widgets are working.
+		testing()
 
 		imgui.Render()
 

@@ -14,13 +14,9 @@ import "C"
 
 import (
 	"fmt"
-	"unsafe"
 )
 
 var stringPool StringPool
-
-type Context C.ImGuiContext
-type DrawData C.ImDrawData
 
 func CreateContext() (*Context, error) {
 	ctx := C.igCreateContext(nil)
@@ -39,39 +35,35 @@ func NewFrame() {
 	C.igNewFrame()
 }
 
-func ShowDemoWindow() {
-	C.igShowDemoWindow(nil)
-}
+// func ShowDemoWindow() {
+// 	C.igShowDemoWindow(nil)
+// }
 
-func Begin(name string, open *bool, flags int) bool {
-	s := stringPool.StoreCString(name)
-	return (bool)(C.igBegin(s, (*C.bool)(open), (C.ImGuiWindowFlags)(flags)))
+// func Begin(name string, open *bool, flags int) bool {
+// 	s := stringPool.StoreCString(name)
+// 	return (bool)(C.igBegin(s, (*C.bool)(open), (C.ImGuiWindowFlags)(flags)))
+// }
 
-	// str := C.CString(name)
-	// defer C.free(unsafe.Pointer(str))
-	// return (bool)(C.igBegin(str, (*C.bool)(open), (C.ImGuiWindowFlags)(flags)))
-}
+// func End() {
+// 	C.igEnd()
+// }
 
-func End() {
-	C.igEnd()
-}
+// func DockSpaceOverViewport(dockspaceID C.ImGuiID, viewport *C.ImGuiViewport, flags C.ImGuiDockNodeFlags, windowClass *C.ImGuiWindowClass) {
+// 	C.igDockSpaceOverViewport(dockspaceID, viewport, flags, windowClass)
+// }
 
-func DockSpaceOverViewport(dockspaceID C.ImGuiID, viewport *C.ImGuiViewport, flags C.ImGuiDockNodeFlags, windowClass *C.ImGuiWindowClass) {
-	C.igDockSpaceOverViewport(dockspaceID, viewport, flags, windowClass)
-}
+// func UpdatePlatformWindows() {
+// 	C.igUpdatePlatformWindows()
+// }
 
-func UpdatePlatformWindows() {
-	C.igUpdatePlatformWindows()
-}
+// func RenderPlatformWindowsDefault(platformArg unsafe.Pointer, rendererArg unsafe.Pointer) {
+// 	C.igRenderPlatformWindowsDefault(platformArg, rendererArg)
+// }
 
-func RenderPlatformWindowsDefault(platformArg unsafe.Pointer, rendererArg unsafe.Pointer) {
-	C.igRenderPlatformWindowsDefault(platformArg, rendererArg)
-}
+// func GetDrawData() *DrawData {
+// 	return (*DrawData)(C.igGetDrawData())
+// }
 
-func GetDrawData() *DrawData {
-	return (*DrawData)(C.igGetDrawData())
-}
-
-func Render() {
-	C.igRender()
-}
+// func Render() {
+// 	C.igRender()
+// }

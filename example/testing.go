@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/nitrix/imgui-go/imgui"
+	"github.com/nitrix/imgui-go"
 )
 
 var b bool

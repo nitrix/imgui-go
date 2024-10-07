@@ -4,8 +4,8 @@ import (
 	"runtime"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
-	"github.com/nitrix/imgui-go/glfw"
-	"github.com/nitrix/imgui-go/imgui"
+	"github.com/nitrix/glfw-go"
+	"github.com/nitrix/imgui-go"
 )
 
 func init() {

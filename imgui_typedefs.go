@@ -199,11 +199,6 @@ type U16 C.ImU16
 type U32 C.ImU32
 type U64 C.ImU64
 type U8 C.ImU8
-type Vec1 C.ImVec1
-type Vec2 C.ImVec2
-type Vec2ih C.ImVec2ih
-type Vec4 C.ImVec4
 type Wchar C.ImWchar
 type Wchar16 C.ImWchar16
 type Wchar32 C.ImWchar32
-type STB_TexteditState C.STB_TexteditState

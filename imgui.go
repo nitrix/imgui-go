@@ -13,7 +13,9 @@ package imgui
 // #include "cimgui/cimgui.h"
 // #include <stdlib.h>
 import "C"
-import "github.com/go-gl/mathgl/mgl32"
+import (
+	"github.com/go-gl/mathgl/mgl32"
+)
 
 // These are from enums.
 type MouseSource C.ImGuiMouseSource

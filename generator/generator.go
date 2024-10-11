@@ -10,6 +10,8 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/iancoleman/strcase"
 )
 
 type EnumT struct {
@@ -163,12 +165,60 @@ func cToCgoType(cType string) string {
 	}
 
 	switch cType {
+	case "char":
+		return "C.char"
+	case "bool":
+		return "C.bool"
+	case "int":
+		return "C.int"
+	case "float":
+		return "C.float"
+	case "float*":
+		return "*C.float"
+	case "double":
+		return "C.double"
+	case "double*":
+		return "*C.double"
+	case "int*":
+		return "*C.int"
+	case "unsigned int*":
+		return "*C.uint"
+	case "unsigned int":
+		return "C.uint"
 	case "char*":
 		return "*C.char"
 	case "bool*":
 		return "*C.bool"
 	case "void*":
 		return "unsafe.Pointer"
+
+	// Weirder cases.
+	case "size_t":
+		return "C.size_t"
+	case "size_t*":
+		return "*C.size_t"
+	case "int[2]":
+		return "*C.int"
+	case "int[3]":
+		return "*C.int"
+	case "int[4]":
+		return "*C.int"
+	case "float[2]":
+		return "*C.float"
+	case "float[3]":
+		return "*C.float"
+	case "float[4]":
+		return "*C.float"
+	case "char[5]":
+		return "*C.char"
+	case "char* const[]":
+		return "**C.char"
+	case "unsigned char":
+		return "C.uchar"
+	case "unsigned char*":
+		return "*C.uchar"
+	case "unsigned char[256]":
+		return "*C.uchar"
 	}
 
 	if isImLike(cType) || strings.HasPrefix(cType, "ig") {
@@ -211,9 +261,9 @@ func cToGoType(cType string) string {
 	case "float[2]":
 		return "[2]float32"
 	case "float[3]":
-		return "[3]float32"
+		return "*mgl32.Vec3"
 	case "float[4]":
-		return "[4]float32"
+		return "*mgl32.Vec4"
 	case "double":
 		return "float64"
 	case "double*":
@@ -251,10 +301,14 @@ func cToGoType(cType string) string {
 	}
 
 	switch cType {
+	case "ImVec2*":
+		return "*mgl32.Vec2"
 	case "ImVec2":
 		return "mgl32.Vec2"
 	case "ImVec4":
 		return "mgl32.Vec4"
+	case "ImVec4*":
+		return "*mgl32.Vec4"
 	}
 
 	if strings.HasPrefix(cType, "ImGui") {
@@ -280,10 +334,13 @@ func cToGoType(cType string) string {
 }
 
 func safeIdentifier(s string) string {
+	s = strcase.ToLowerCamel(s)
+
 	switch s {
 	case "type":
-		return "_type"
+		return "ty"
 	}
+
 	return s
 }
 
@@ -317,23 +374,7 @@ func generateDefinitions(definitions definitionsT) {
 		"igAddDrawListToDrawDataEx",    // FIXME: Wants a ImVector_ImDrawListPtr*, why?
 		"igDockBuilderCopyDockSpace",   // FIXME: Wants a Vector_const_charPtr*, why?
 		"igDockBuilderCopyNode",        // FIXME: Wants a Vector_ImGuiID*, why?
-	}
-
-	whitelist := []string{
-		"igCreateContext",
-		"igDestroyContext",
-		"igRender",
-		"igGetDrawData",
-		"igShowDemoWindow",
-		"igBegin",
-		"igEnd",
-		"igText",
-		"igButton",
-		"igCheckbox",
-		"igDockSpaceOverViewport",
-		"igUpdatePlatformWindows",
-		"igRenderPlatformWindowsDefault",
-		"igText",
+		"igGetStyleColorVec4",
 	}
 
 	for _, def := range sortedDefinitions {
@@ -345,7 +386,7 @@ func generateDefinitions(definitions definitionsT) {
 			continue
 		}
 
-		if !slices.Contains(whitelist, def.OverloadedName) {
+		if strings.HasPrefix(def.OverloadedName, "igIm") {
 			continue
 		}
 
@@ -374,7 +415,7 @@ func generateDefinitions(definitions definitionsT) {
 			continue
 		}
 
-		// FIXME: Skip function pointer parameters for now.
+		// FIXME: Skip functions with function pointer parameters for now.
 		hasFunctionPointer := false
 		for _, arg := range def.ArgsT {
 			if strings.Contains(arg.Type, "(*)") {
@@ -400,7 +441,7 @@ func generateDefinitions(definitions definitionsT) {
 				isNextArgumentVariadic := len(def.ArgsT) > i+1 && def.ArgsT[i+1].Name == "..."
 
 				if isNextArgumentVariadic {
-					output.WriteString("_fmt string, _args ...interface{}")
+					output.WriteString("vfmt string, vargs ...interface{}")
 					hasVariadic = true
 					break
 				} else {
@@ -427,14 +468,105 @@ func generateDefinitions(definitions definitionsT) {
 
 		// Body.
 		{
-			if hasVariadic {
-				output.WriteString("\t_vfmt := fmt.Sprintf(_fmt, _args...)\n")
+			// if hasVariadic {
+			// output.WriteString("\t_vfmt := fmt.Sprintf(_fmt, _args...)\n")
+			// }
+
+			for i, arg := range def.ArgsT {
+				isNextArgumentVariadic := len(def.ArgsT) > i+1 && def.ArgsT[i+1].Name == "..."
+
+				output.WriteString(fmt.Sprintf("\ta%d := ", i))
+
+				expr := safeIdentifier(arg.Name)
+
+				cType := arg.Type
+				goType := cToGoType(cType)
+				cgoType := cToCgoType(cType)
+
+				if isNextArgumentVariadic {
+					expr = "fmt.Sprintf(vfmt, vargs...)"
+				}
+
+				switch goType {
+				case "string":
+					expr = fmt.Sprintf("stringPool.StoreCString(%s)", expr)
+				case "mgl32.Vec2":
+					expr = fmt.Sprintf("mglVec2ToImVec2(%s)", expr)
+				case "mgl32.Vec4":
+					expr = fmt.Sprintf("mglVec4ToImVec4(%s)", expr)
+				case "*mgl32.Vec2":
+					expr = fmt.Sprintf("(%s)(unsafe.Pointer(&%s[0]))", cgoType, expr)
+				case "*mgl32.Vec4":
+					expr = fmt.Sprintf("(%s)(unsafe.Pointer(&%s[0]))", cgoType, expr)
+				default:
+					if strings.HasPrefix(goType, "[") {
+						expr = fmt.Sprintf("&%s[0]", expr)
+					}
+					if strings.HasPrefix(cgoType, "*") {
+						expr = fmt.Sprintf("unsafe.Pointer(%s)", expr)
+					}
+					expr = fmt.Sprintf("(%s)(%s)", cgoType, expr)
+				}
+
+				// cgoType := goToCgoType()
+				// expr = fmt.Sprintf("(%s)(%s)", cgoType, expr)
+
+				output.WriteString(fmt.Sprintf("%s\n", expr))
+
+				if isNextArgumentVariadic {
+					break
+				}
 			}
 
+			/*
+				if hasVariadic {
+					output.WriteString(fmt.Sprintf("C.wrap_%s(", def.OverloadedName))
+				} else {
+					output.WriteString(fmt.Sprintf("C.%s(", def.OverloadedName))
+				}
+
+				for i, arg := range def.ArgsT {
+					if i > 0 {
+						output.WriteString(", ")
+					}
+
+					isString := cToGoType(arg.Type) == "string"
+					isVec := strings.HasPrefix(cToGoType(arg.Type), "mgl32.")
+					nextArgIsVariadic := len(def.ArgsT) > i+1 && def.ArgsT[i+1].Name == "..."
+
+					output.WriteString(fmt.Sprintf("(%s)(", cToCgoType(arg.Type)))
+
+					renamedVar := safeIdentifier(arg.Name)
+					if nextArgIsVariadic {
+						renamedVar = "_vfmt"
+					}
+
+					if isString {
+						output.WriteString(fmt.Sprintf("stringPool.StoreCString(%s)", renamedVar))
+					} else if isVec {
+						n := strings.TrimPrefix(cToGoType(arg.Type), "mgl32.")
+						output.WriteString(fmt.Sprintf("mgl%sToIm%s(%s)", n, n, renamedVar))
+					} else {
+						output.WriteString(renamedVar)
+					}
+
+					output.WriteString(")")
+
+					if nextArgIsVariadic {
+						break
+					}
+				}
+
+				if hasReturnType {
+					output.WriteString(")")
+				}
+
+				output.WriteString(")\n")
+			*/
+
+			output.WriteString("\t")
 			if hasReturnType {
-				output.WriteString(fmt.Sprintf("\treturn (%s)(", cToGoType(def.Ret)))
-			} else {
-				output.WriteString("\t")
+				output.WriteString("call := ")
 			}
 
 			if hasVariadic {
@@ -443,43 +575,35 @@ func generateDefinitions(definitions definitionsT) {
 				output.WriteString(fmt.Sprintf("C.%s(", def.OverloadedName))
 			}
 
-			for i, arg := range def.ArgsT {
+			for i := range def.ArgsT {
 				if i > 0 {
 					output.WriteString(", ")
 				}
 
-				isString := cToGoType(arg.Type) == "string"
-				isVec := strings.HasPrefix(cToGoType(arg.Type), "mgl32.")
-				nextArgIsVariadic := len(def.ArgsT) > i+1 && def.ArgsT[i+1].Name == "..."
+				output.WriteString(fmt.Sprintf("a%d", i))
 
-				output.WriteString(fmt.Sprintf("(%s)(", cToCgoType(arg.Type)))
-
-				renamedVar := safeIdentifier(arg.Name)
-				if nextArgIsVariadic {
-					renamedVar = "_vfmt"
-				}
-
-				if isString {
-					output.WriteString(fmt.Sprintf("stringPool.StoreCString(%s)", renamedVar))
-				} else if isVec {
-					n := strings.TrimPrefix(cToGoType(arg.Type), "mgl32.")
-					output.WriteString(fmt.Sprintf("mgl%sToIm%s(%s)", n, n, renamedVar))
-				} else {
-					output.WriteString(renamedVar)
-				}
-
-				output.WriteString(")")
-
-				if nextArgIsVariadic {
+				isNextArgumentVariadic := len(def.ArgsT) > i+1 && def.ArgsT[i+1].Name == "..."
+				if isNextArgumentVariadic {
 					break
 				}
 			}
 
-			if hasReturnType {
-				output.WriteString(")")
-			}
-
 			output.WriteString(")\n")
+
+			if hasReturnType {
+				expr := "call"
+
+				goType := cToGoType(def.Ret)
+
+				if goType == "string" {
+					expr = fmt.Sprintf("C.GoString(%s)", expr)
+				} else {
+					expr = fmt.Sprintf("(%s)(%s)", goType, expr)
+				}
+
+				output.WriteString(fmt.Sprintf("\tr := %s\n", expr))
+				output.WriteString("\treturn r\n")
+			}
 		}
 
 		output.WriteString("}\n\n")

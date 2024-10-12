@@ -139,7 +139,7 @@ func generateTypedefs(typedefsDict typedefsDictT) {
 
 	blacklist := []string{
 		"const_iterator", "iterator", "value_type", "STB_TexteditState",
-		"ImVec1", "ImVec2", "ImVec2ih", "ImVec4", // These are replaced by mgl32.Vec2 and mgl32.Vec4.
+		"ImVec1", "ImVec2", "ImVec2ih", "ImVec4", // These are specially handled and replaced by mgl32.Vec2 and mgl32.Vec4.
 	}
 
 	for _, name := range sortedNames {
@@ -191,8 +191,6 @@ func cToCgoType(cType string) string {
 		return "*C.bool"
 	case "void*":
 		return "unsafe.Pointer"
-
-	// Weirder cases.
 	case "size_t":
 		return "C.size_t"
 	case "size_t*":
@@ -282,8 +280,6 @@ func cToGoType(cType string) string {
 		return "uint"
 	case "void*":
 		return "unsafe.Pointer"
-
-	// FIXME: Not sure about these.
 	case "size_t":
 		return "uint"
 	case "size_t*":
@@ -367,14 +363,11 @@ func generateDefinitions(definitions definitionsT) {
 	})
 
 	blacklist := []string{
-		"igNewFrame",                   // Needed to be overridden to control the pool memory allocator.
-		"igGetAllocatorFunctions",      // FIXME: Wants a void**, why?
-		"igImFormatStringToTempBuffer", // FIXME: Wants a char**, why?
-		"igImTextStrFromUtf8",          // FIXME: Wants a char**, why?
-		"igAddDrawListToDrawDataEx",    // FIXME: Wants a ImVector_ImDrawListPtr*, why?
-		"igDockBuilderCopyDockSpace",   // FIXME: Wants a Vector_const_charPtr*, why?
-		"igDockBuilderCopyNode",        // FIXME: Wants a Vector_ImGuiID*, why?
-		"igGetStyleColorVec4",
+		"igNewFrame",                 // Needed to be overridden to control the pool memory allocator.
+		"igGetAllocatorFunctions",    // Wont be tweaking the allocator functions from Go.
+		"igAddDrawListToDrawDataEx",  // TODO: Wants an ImVector_ImDrawListPtr*
+		"igDockBuilderCopyDockSpace", // TODO: Wants a ImVector_const_charPtr*
+		"igDockBuilderCopyNode",      // TODO: Wants a ImVector_ImGuiID*
 	}
 
 	for _, def := range sortedDefinitions {
@@ -415,7 +408,7 @@ func generateDefinitions(definitions definitionsT) {
 			continue
 		}
 
-		// FIXME: Skip functions with function pointer parameters for now.
+		// Skip functions with function pointer parameters for now.
 		hasFunctionPointer := false
 		for _, arg := range def.ArgsT {
 			if strings.Contains(arg.Type, "(*)") {
@@ -468,10 +461,6 @@ func generateDefinitions(definitions definitionsT) {
 
 		// Body.
 		{
-			// if hasVariadic {
-			// output.WriteString("\t_vfmt := fmt.Sprintf(_fmt, _args...)\n")
-			// }
-
 			for i, arg := range def.ArgsT {
 				isNextArgumentVariadic := len(def.ArgsT) > i+1 && def.ArgsT[i+1].Name == "..."
 
@@ -508,61 +497,12 @@ func generateDefinitions(definitions definitionsT) {
 					expr = fmt.Sprintf("(%s)(%s)", cgoType, expr)
 				}
 
-				// cgoType := goToCgoType()
-				// expr = fmt.Sprintf("(%s)(%s)", cgoType, expr)
-
 				output.WriteString(fmt.Sprintf("%s\n", expr))
 
 				if isNextArgumentVariadic {
 					break
 				}
 			}
-
-			/*
-				if hasVariadic {
-					output.WriteString(fmt.Sprintf("C.wrap_%s(", def.OverloadedName))
-				} else {
-					output.WriteString(fmt.Sprintf("C.%s(", def.OverloadedName))
-				}
-
-				for i, arg := range def.ArgsT {
-					if i > 0 {
-						output.WriteString(", ")
-					}
-
-					isString := cToGoType(arg.Type) == "string"
-					isVec := strings.HasPrefix(cToGoType(arg.Type), "mgl32.")
-					nextArgIsVariadic := len(def.ArgsT) > i+1 && def.ArgsT[i+1].Name == "..."
-
-					output.WriteString(fmt.Sprintf("(%s)(", cToCgoType(arg.Type)))
-
-					renamedVar := safeIdentifier(arg.Name)
-					if nextArgIsVariadic {
-						renamedVar = "_vfmt"
-					}
-
-					if isString {
-						output.WriteString(fmt.Sprintf("stringPool.StoreCString(%s)", renamedVar))
-					} else if isVec {
-						n := strings.TrimPrefix(cToGoType(arg.Type), "mgl32.")
-						output.WriteString(fmt.Sprintf("mgl%sToIm%s(%s)", n, n, renamedVar))
-					} else {
-						output.WriteString(renamedVar)
-					}
-
-					output.WriteString(")")
-
-					if nextArgIsVariadic {
-						break
-					}
-				}
-
-				if hasReturnType {
-					output.WriteString(")")
-				}
-
-				output.WriteString(")\n")
-			*/
 
 			output.WriteString("\t")
 			if hasReturnType {
@@ -597,6 +537,8 @@ func generateDefinitions(definitions definitionsT) {
 
 				if goType == "string" {
 					expr = fmt.Sprintf("C.GoString(%s)", expr)
+				} else if goType == "*mgl32.Vec4" {
+					expr = fmt.Sprintf("(*mgl32.Vec4)(unsafe.Pointer(%s))", expr)
 				} else {
 					expr = fmt.Sprintf("(%s)(%s)", goType, expr)
 				}

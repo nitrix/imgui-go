@@ -17,7 +17,8 @@ func testing() {
 	imgui.Checkbox("Check me", &dummyBool)
 
 	if imgui.Button("Something", mgl32.Vec2{100, 32}) {
-		fmt.Println("Clicked!")
+		ptr := imgui.GetStyleColorVec4(imgui.Col_Button)
+		fmt.Printf("Clicked, button color: %v!\n", *ptr)
 	}
 
 	imgui.SliderInt("Height", &dummyInt, 0, 100, "%d", imgui.SliderFlags_None)

@@ -2066,6 +2066,13 @@ func GetStyleColorName(idx Col) string {
 	return r
 }
 
+func GetStyleColorVec4(idx Col) *mgl32.Vec4 {
+	a0 := (C.ImGuiCol)(idx)
+	call := C.igGetStyleColorVec4(a0)
+	r := (*mgl32.Vec4)(unsafe.Pointer(call))
+	return r
+}
+
 func GetStyleVarInfo(idx StyleVar) *DataVarInfo {
 	a0 := (C.ImGuiStyleVar)(idx)
 	call := C.igGetStyleVarInfo(a0)

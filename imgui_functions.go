@@ -35,7 +35,7 @@ func AddSettingsHandler(handler *SettingsHandler) {
 	C.igAddSettingsHandler(a0)
 }
 
-func AlnTextToFramePadding() {
+func AlignTextToFramePadding() {
 	C.igAlignTextToFramePadding()
 }
 
@@ -1782,13 +1782,13 @@ func GetFrameCount() int {
 	return r
 }
 
-func GetFrameHeht() float32 {
+func GetFrameHeight() float32 {
 	call := C.igGetFrameHeight()
 	r := (float32)(call)
 	return r
 }
 
-func GetFrameHehtWithSpacing() float32 {
+func GetFrameHeightWithSpacing() float32 {
 	call := C.igGetFrameHeightWithSpacing()
 	r := (float32)(call)
 	return r
@@ -2080,13 +2080,13 @@ func GetStyleVarInfo(idx StyleVar) *DataVarInfo {
 	return r
 }
 
-func GetTextLineHeht() float32 {
+func GetTextLineHeight() float32 {
 	call := C.igGetTextLineHeight()
 	r := (float32)(call)
 	return r
 }
 
-func GetTextLineHehtWithSpacing() float32 {
+func GetTextLineHeightWithSpacing() float32 {
 	call := C.igGetTextLineHeightWithSpacing()
 	r := (float32)(call)
 	return r
@@ -2174,7 +2174,7 @@ func GetWindowDrawList() *DrawList {
 	return r
 }
 
-func GetWindowHeht() float32 {
+func GetWindowHeight() float32 {
 	call := C.igGetWindowHeight()
 	r := (float32)(call)
 	return r
@@ -3091,7 +3091,7 @@ func NavClearPreferredPosForAxis(axis Axis) {
 	C.igNavClearPreferredPosForAxis(a0)
 }
 
-func NavHhlhtActivated(id ID) {
+func NavHighlightActivated(id ID) {
 	a0 := (C.ImGuiID)(id)
 	C.igNavHighlightActivated(a0)
 }
@@ -3153,7 +3153,7 @@ func NavMoveRequestTryWrapping(window *Window, moveFlags NavMoveFlags) {
 	C.igNavMoveRequestTryWrapping(a0, a1)
 }
 
-func NavRestoreHhlhtAfterMove() {
+func NavRestoreHighlightAfterMove() {
 	C.igNavRestoreHighlightAfterMove()
 }
 
@@ -3495,7 +3495,7 @@ func RenderMouseCursor(pos mgl32.Vec2, scale float32, mouseCursor MouseCursor, c
 	C.igRenderMouseCursor(a0, a1, a2, a3, a4, a5)
 }
 
-func RenderNavHhlht(bb Rect, id ID, flags NavHighlightFlags) {
+func RenderNavHighlight(bb Rect, id ID, flags NavHighlightFlags) {
 	a0 := (C.ImRect)(bb)
 	a1 := (C.ImGuiID)(id)
 	a2 := (C.ImGuiNavHighlightFlags)(flags)
@@ -4479,7 +4479,7 @@ func StyleColorsDark(dst *Style) {
 	C.igStyleColorsDark(a0)
 }
 
-func StyleColorsLht(dst *Style) {
+func StyleColorsLight(dst *Style) {
 	a0 := (*C.ImGuiStyle)(unsafe.Pointer(dst))
 	C.igStyleColorsLight(a0)
 }
@@ -4812,7 +4812,7 @@ func TableGetHeaderAngledMaxLabelWidth() float32 {
 	return r
 }
 
-func TableGetHeaderRowHeht() float32 {
+func TableGetHeaderRowHeight() float32 {
 	call := C.igTableGetHeaderRowHeight()
 	r := (float32)(call)
 	return r
@@ -5014,7 +5014,7 @@ func TableUpdateBorders(table *Table) {
 	C.igTableUpdateBorders(a0)
 }
 
-func TableUpdateColumnsWehtFromWidth(table *Table) {
+func TableUpdateColumnsWeightFromWidth(table *Table) {
 	a0 := (*C.ImGuiTable)(unsafe.Pointer(table))
 	C.igTableUpdateColumnsWeightFromWidth(a0)
 }

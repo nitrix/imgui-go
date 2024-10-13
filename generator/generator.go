@@ -385,7 +385,7 @@ func generateDefinitions(definitions definitionsT) {
 
 		// fmt.Println("=>", def.OverloadedName)
 
-		renamedName := strings.ReplaceAll(def.OverloadedName, "ig", "")
+		renamedName := strings.TrimPrefix(def.OverloadedName, "ig")
 		if isImLike(renamedName) {
 			renamedName = renamedName[2:]
 		}

@@ -80,7 +80,7 @@ func main() {
 		imgui.ShowDemoWindow(nil)
 
 		// Ignore this, it's just how I test the wrapped widgets are working.
-		testing()
+		// testing()
 
 		imgui.Render()
 

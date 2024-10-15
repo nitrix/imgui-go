@@ -20,11 +20,15 @@ type EnumT struct {
 	CalcValue int    `json:"calc_value"`
 }
 
-type structsAndEnumsT struct {
-	Enums map[string][]EnumT `json:"enums"`
+type FieldT struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
 }
 
-type typedefsDictT map[string]string
+type structsAndEnumsT struct {
+	Enums   map[string][]EnumT  `json:"enums"`
+	Structs map[string][]FieldT `json:"structs"`
+}
 
 type definitionsT map[string][]definitionT
 
@@ -52,18 +56,6 @@ func main() {
 		panic(err)
 	}
 
-	content, err = os.ReadFile("thirdparty/cimgui/generator/output/typedefs_dict.json")
-	if err != nil {
-		panic(err)
-	}
-
-	// Parse the JSON file.
-	var typedefsDict map[string]string
-	err = json.NewDecoder(bytes.NewReader(content)).Decode(&typedefsDict)
-	if err != nil {
-		panic(err)
-	}
-
 	content, err = os.ReadFile("thirdparty/cimgui/generator/output/definitions.json")
 	if err != nil {
 		panic(err)
@@ -77,7 +69,7 @@ func main() {
 	}
 
 	generateConstants(&structsAndEnums)
-	generateTypedefs(typedefsDict)
+	generateTypedefs(&structsAndEnums)
 	generateDefinitions(definitions)
 	generateWrappersHeaders(definitions)
 	generateWrappersSources(definitions)
@@ -122,7 +114,7 @@ func isImLike(s string) bool {
 	return false
 }
 
-func generateTypedefs(typedefsDict typedefsDictT) {
+func generateTypedefs(structsAndEnums *structsAndEnumsT) {
 	typedefsContent := strings.Builder{}
 	typedefsContent.WriteString("package imgui\n")
 	typedefsContent.WriteString("\n")
@@ -131,8 +123,8 @@ func generateTypedefs(typedefsDict typedefsDictT) {
 	typedefsContent.WriteString("import \"C\"\n")
 	typedefsContent.WriteString("\n")
 
-	sortedNames := make([]string, 0, len(typedefsDict))
-	for name := range typedefsDict {
+	sortedNames := make([]string, 0, len(structsAndEnums.Structs))
+	for name := range structsAndEnums.Structs {
 		sortedNames = append(sortedNames, name)
 	}
 	sort.Strings(sortedNames)
@@ -147,7 +139,19 @@ func generateTypedefs(typedefsDict typedefsDictT) {
 			continue
 		}
 
-		typedefsContent.WriteString(fmt.Sprintf("type %s C.%s\n", cToGoType(name), name))
+		s := structsAndEnums.Structs[name]
+		_ = s
+
+		// Use `go tool cgo -godefs` to generate the Go struct from the C struct?
+
+		// reflect.TypeOf()
+		// typedefsContent.WriteString(fmt.Sprintf("type %s struct {\n", name))
+		// for _, field := range s {
+		// typedefsContent.WriteString(fmt.Sprintf("\t%s %s\n", safeIdentifier(field.Name), cToGoType(field.Type)))
+		// }
+		// typedefsContent.WriteString("}\n\n")
+
+		// typedefsContent.WriteString(fmt.Sprintf("type %s C.%s\n", cToGoType(name), name))
 	}
 
 	err := os.WriteFile("imgui_typedefs.go", []byte(typedefsContent.String()), 0644)
@@ -294,6 +298,15 @@ func cToGoType(cType string) string {
 		return "[]string"
 	case "char[5]":
 		return "[5]byte"
+
+		// case "short":
+		// 	return "int16"
+		// case "unsigned short":
+		// 	return "uint16"
+		// case "bool(*)(ImFontAtlas* atlas)":
+		// 	return "func(atlas *ImFontAtlas) bool"
+		// case "void(*)(ImGuiContext* ctx,ImGuiDockNode* node,ImGuiTabBar* tab_bar)":
+		// 	return "func(ctx *ImGuiContext, node *ImGuiDockNode, tab_bar *ImGuiTabBar)"
 	}
 
 	switch cType {

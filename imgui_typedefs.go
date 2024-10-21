@@ -1,7 +1,7 @@
 package imgui
 
-// #cgo CFLAGS: -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 -Idist/include
-// #include "cimgui/cimgui.h"
+// #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS 1
+// #include "dist/include/cimgui/cimgui.h"
 import "C"
 
 type BitArrayForNamedKeys C.ImBitArrayForNamedKeys

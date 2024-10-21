@@ -30,6 +30,8 @@ type structsAndEnumsT struct {
 	Structs map[string][]FieldT `json:"structs"`
 }
 
+type typedefsDictT map[string]string
+
 type definitionsT map[string][]definitionT
 
 type definitionT struct {
@@ -68,8 +70,20 @@ func main() {
 		panic(err)
 	}
 
+	content, err = os.ReadFile("thirdparty/cimgui/generator/output/typedefs_dict.json")
+	if err != nil {
+		panic(err)
+	}
+
+	// Parse the JSON file.
+	var typedefsDict map[string]string
+	err = json.NewDecoder(bytes.NewReader(content)).Decode(&typedefsDict)
+	if err != nil {
+		panic(err)
+	}
+
 	generateConstants(&structsAndEnums)
-	generateTypedefs(&structsAndEnums)
+	generateTypedefs(typedefsDict)
 	generateDefinitions(definitions)
 	generateWrappersHeaders(definitions)
 	generateWrappersSources(definitions)
@@ -114,17 +128,23 @@ func isImLike(s string) bool {
 	return false
 }
 
-func generateTypedefs(structsAndEnums *structsAndEnumsT) {
+func generateTypedefs(typedefsDict typedefsDictT) {
 	typedefsContent := strings.Builder{}
 	typedefsContent.WriteString("package imgui\n")
 	typedefsContent.WriteString("\n")
-	typedefsContent.WriteString("// #cgo CFLAGS: -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 -Idist/include\n")
-	typedefsContent.WriteString("// #include \"cimgui/cimgui.h\"\n")
+	typedefsContent.WriteString("// #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS 1\n")
+	typedefsContent.WriteString("// #include \"dist/include/cimgui/cimgui.h\"\n")
 	typedefsContent.WriteString("import \"C\"\n")
 	typedefsContent.WriteString("\n")
 
-	sortedNames := make([]string, 0, len(structsAndEnums.Structs))
-	for name := range structsAndEnums.Structs {
+	// sortedNames := make([]string, 0, len(structsAndEnums.Structs))
+	// for name := range structsAndEnums.Structs {
+	// 	sortedNames = append(sortedNames, name)
+	// }
+	// sort.Strings(sortedNames)
+
+	sortedNames := make([]string, 0, len(typedefsDict))
+	for name := range typedefsDict {
 		sortedNames = append(sortedNames, name)
 	}
 	sort.Strings(sortedNames)
@@ -139,8 +159,8 @@ func generateTypedefs(structsAndEnums *structsAndEnumsT) {
 			continue
 		}
 
-		s := structsAndEnums.Structs[name]
-		_ = s
+		// s := structsAndEnums.Structs[name]
+		// _ = s
 
 		// Use `go tool cgo -godefs` to generate the Go struct from the C struct?
 
@@ -151,7 +171,7 @@ func generateTypedefs(structsAndEnums *structsAndEnumsT) {
 		// }
 		// typedefsContent.WriteString("}\n\n")
 
-		// typedefsContent.WriteString(fmt.Sprintf("type %s C.%s\n", cToGoType(name), name))
+		typedefsContent.WriteString(fmt.Sprintf("type %s C.%s\n", cToGoType(name), name))
 	}
 
 	err := os.WriteFile("imgui_typedefs.go", []byte(typedefsContent.String()), 0644)
@@ -357,8 +377,8 @@ func generateDefinitions(definitions definitionsT) {
 	output := strings.Builder{}
 	output.WriteString("package imgui\n")
 	output.WriteString("\n")
-	output.WriteString("// #cgo CFLAGS: -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 -Idist/include\n")
-	output.WriteString("// #include \"cimgui/cimgui.h\"\n")
+	output.WriteString("// #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS 1\n")
+	output.WriteString("// #include \"dist/include/cimgui/cimgui.h\"\n")
 	output.WriteString("// #include \"imgui_wrappers.h\"\n")
 	output.WriteString("// #include <stdbool.h>\n")
 	output.WriteString("import \"C\"\n")
@@ -594,7 +614,8 @@ func wrapperPrototypeForDefinition(def definitionT) string {
 
 func generateWrappersSources(definitions definitionsT) {
 	output := strings.Builder{}
-	output.WriteString("#include \"cimgui/cimgui.h\"\n")
+	output.WriteString("#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS 1\n")
+	output.WriteString("#include \"dist/include/cimgui/cimgui.h\"\n")
 	output.WriteString("\n")
 
 	sortedDefinitions := make([]definitionT, 0, len(definitions))
@@ -653,7 +674,9 @@ func generateWrappersSources(definitions definitionsT) {
 
 func generateWrappersHeaders(definitions definitionsT) {
 	output := strings.Builder{}
-	output.WriteString("#include \"cimgui/cimgui.h\"\n\n")
+	output.WriteString("#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS 1\n")
+	output.WriteString("#include \"dist/include/cimgui/cimgui.h\"\n")
+	output.WriteString("\n")
 
 	sortedDefinitions := make([]definitionT, 0, len(definitions))
 	for _, definition := range definitions {

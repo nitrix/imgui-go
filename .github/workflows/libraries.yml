@@ -192,12 +192,6 @@ jobs:
           git reset --hard
           git rev-parse HEAD:thirdparty/cimgui > dist/git/cimgui.txt
           git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
-      - name: Detect glfw changes
-        id: glfw-changes
-        run: |
-          git reset --hard
-          git rev-parse HEAD:thirdparty/glfw > dist/git/glfw.txt
-          git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
       - name: Create dist folders
         run: |
           mkdir -p dist/windows

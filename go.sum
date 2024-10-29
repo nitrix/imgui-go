@@ -6,6 +6,8 @@ github.com/iancoleman/strcase v0.3.0 h1:nTXanmYxhfFAMjZL34Ov6gkzEsSJZ5DbhxWjvSAS
 github.com/iancoleman/strcase v0.3.0/go.mod h1:iwCmte+B7n89clKwxIoIXy/HfoL7AsD47ZCWhYzw7ho=
 github.com/nitrix/glfw-go v0.0.0-20241013032952-49c68a1ac4a4 h1:7a3h88ivLJiSGwdac9OvhPB7AQZ/G998ejHWP2Kfg/s=
 github.com/nitrix/glfw-go v0.0.0-20241013032952-49c68a1ac4a4/go.mod h1:C3O0FM3UuTLT620w4khrkJiIc2gr/IY6EwAXCNOFWFg=
+github.com/nitrix/glfw-go v0.0.0-20241029004842-563277b904ed h1:zP+uetFfdgiPj7EigNo+L8zmeBgbgeD2Vsm54+gOo8o=
+github.com/nitrix/glfw-go v0.0.0-20241029004842-563277b904ed/go.mod h1:C3O0FM3UuTLT620w4khrkJiIc2gr/IY6EwAXCNOFWFg=
 golang.org/x/image v0.0.0-20190321063152-3fc05d484e9f/go.mod h1:kZ7UVZpmo3dzQBMxlp+ypCbDeSB+sBbTgSJuh5dn5js=
 golang.org/x/image v0.21.0 h1:c5qV36ajHpdj4Qi0GnE0jUc/yuo33OLFaa0d+crTD5s=
 golang.org/x/image v0.21.0/go.mod h1:vUbsLavqK/W303ZroQQVKQ+Af3Yl6Uz1Ppu5J/cLz78=

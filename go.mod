@@ -7,7 +7,7 @@ require github.com/go-gl/gl v0.0.0-20231021071112-07e5d0ea2e71
 require (
 	github.com/go-gl/mathgl v1.1.0
 	github.com/iancoleman/strcase v0.3.0
-	github.com/nitrix/glfw-go v0.0.0-20241013032952-49c68a1ac4a4
+	github.com/nitrix/glfw-go v0.0.0-20241029004842-563277b904ed
 )
 
 require golang.org/x/image v0.21.0 // indirect

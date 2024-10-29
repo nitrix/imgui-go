@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"slices"
 	"sort"
 	"strings"
@@ -82,11 +83,38 @@ func main() {
 		panic(err)
 	}
 
+	copyFile("thirdparty/cimgui/cimgui.h", "dist/include/cimgui/cimgui.h")
+	copyFile("thirdparty/cimgui/cimgui_impl.h", "dist/include/cimgui/cimgui_impl.h")
+
 	generateConstants(&structsAndEnums)
 	generateTypedefs(typedefsDict)
 	generateDefinitions(definitions)
 	generateWrappersHeaders(definitions)
 	generateWrappersSources(definitions)
+}
+
+func copyFile(src, dst string) error {
+	_ = os.MkdirAll(filepath.Dir(dst), 0750)
+	srcFile, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer srcFile.Close()
+
+	dstFile, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer dstFile.Close()
+
+	_, err = srcFile.WriteTo(dstFile)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Copied file %s to %s\n", src, dst)
+
+	return nil
 }
 
 func generateConstants(structsAndEnums *structsAndEnumsT) {

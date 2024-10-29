@@ -108,9 +108,9 @@ type MultiSelectFlags C.ImGuiMultiSelectFlags
 type MultiSelectIO C.ImGuiMultiSelectIO
 type MultiSelectState C.ImGuiMultiSelectState
 type MultiSelectTempData C.ImGuiMultiSelectTempData
-type NavHighlightFlags C.ImGuiNavHighlightFlags
 type NavItemData C.ImGuiNavItemData
 type NavMoveFlags C.ImGuiNavMoveFlags
+type NavRenderCursorFlags C.ImGuiNavRenderCursorFlags
 type NextItemData C.ImGuiNextItemData
 type NextItemDataFlags C.ImGuiNextItemDataFlags
 type NextWindowData C.ImGuiNextWindowData

@@ -3153,10 +3153,6 @@ func NavMoveRequestTryWrapping(window *Window, moveFlags NavMoveFlags) {
 	C.igNavMoveRequestTryWrapping(a0, a1)
 }
 
-func NavRestoreHighlightAfterMove() {
-	C.igNavRestoreHighlightAfterMove()
-}
-
 func NavUpdateCurrentWindowIsScrollPushableX() {
 	C.igNavUpdateCurrentWindowIsScrollPushableX()
 }
@@ -3495,11 +3491,11 @@ func RenderMouseCursor(pos mgl32.Vec2, scale float32, mouseCursor MouseCursor, c
 	C.igRenderMouseCursor(a0, a1, a2, a3, a4, a5)
 }
 
-func RenderNavHighlight(bb Rect, id ID, flags NavHighlightFlags) {
+func RenderNavCursor(bb Rect, id ID, flags NavRenderCursorFlags) {
 	a0 := (C.ImRect)(bb)
 	a1 := (C.ImGuiID)(id)
-	a2 := (C.ImGuiNavHighlightFlags)(flags)
-	C.igRenderNavHighlight(a0, a1, a2)
+	a2 := (C.ImGuiNavRenderCursorFlags)(flags)
+	C.igRenderNavCursor(a0, a1, a2)
 }
 
 func RenderPlatformWindowsDefault(platformRenderArg unsafe.Pointer, rendererRenderArg unsafe.Pointer) {
@@ -3840,6 +3836,15 @@ func SetLastItemData(itemId ID, inFlags ItemFlags, statusFlags ItemStatusFlags, 
 func SetMouseCursor(cursorType MouseCursor) {
 	a0 := (C.ImGuiMouseCursor)(cursorType)
 	C.igSetMouseCursor(a0)
+}
+
+func SetNavCursorVisible(visible bool) {
+	a0 := (C.bool)(visible)
+	C.igSetNavCursorVisible(a0)
+}
+
+func SetNavCursorVisibleAfterMove() {
+	C.igSetNavCursorVisibleAfterMove()
 }
 
 func SetNavFocusScope(focusScopeId ID) {

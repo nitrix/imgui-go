@@ -1,6 +1,5 @@
 package opengl3
 
-// #cgo CPPFLAGS: -I../../dist/imgui
 // #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 // #define CIMGUI_USE_OPENGL3
 // #include "../../dist/cimgui.h"

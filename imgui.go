@@ -3,8 +3,8 @@ package imgui
 //go:generate go run ./generator
 
 // #cgo CFLAGS: -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 -Idist/include
-// #cgo linux LDFLAGS: -lm -lc++
-// #cgo darwin LDFLAGS: -framework CoreFoundation -lc++ -framework OpenGL -framework Cocoa -framework IOKit -framework QuartzCore
+// #cgo linux LDFLAGS: -lm
+// #cgo darwin LDFLAGS: -framework CoreFoundation -framework OpenGL -framework Cocoa -framework IOKit -framework QuartzCore
 // #include "dist/cimgui/cimgui.h"
 // #include <stdlib.h>
 import "C"

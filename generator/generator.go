@@ -89,7 +89,7 @@ func main() {
 	copyFile("thirdparty/cimgui/cimconfig.h", "dist/cimconfig.h")
 	copyFile("thirdparty/cimgui/generator/output/cimgui_impl.h", "dist/cimgui_impl.h")
 
-	copyFile("thirdparty/cimgui/imgui/imgui.h", "dist/imgui_real.h")
+	copyFile("thirdparty/cimgui/imgui/imgui.h", "dist/imgui.h")
 	copyFile("thirdparty/cimgui/imgui/imconfig.h", "dist/imconfig.h")
 	copyFile("thirdparty/cimgui/imgui/imgui.cpp", "dist/imgui.cpp")
 	copyFile("thirdparty/cimgui/imgui/imgui_internal.h", "dist/imgui_internal.h")
@@ -109,8 +109,8 @@ func main() {
 	copyFile("thirdparty/cimgui/imgui/backends/imgui_impl_opengl3.h", "backends/opengl3/imgui_impl_opengl3.h")
 	copyFile("thirdparty/cimgui/imgui/backends/imgui_impl_opengl3_loader.h", "backends/opengl3/imgui_impl_opengl3_loader.h")
 
-	copyFile("thirdparty/glfw/include/GLFW/glfw3.h", "dist/GLFW/glfw3.h")
-	copyFile("thirdparty/glfw/include/GLFW/glfw3native.h", "dist/GLFW/glfw3native.h")
+	copyFile("thirdparty/glfw/include/GLFW/glfw3.h", "backends/glfw/GLFW/glfw3.h")
+	copyFile("thirdparty/glfw/include/GLFW/glfw3native.h", "backends/glfw/GLFW/glfw3native.h")
 
 	generateConstants(&structsAndEnums)
 	generateTypedefs(typedefsDict)

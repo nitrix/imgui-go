@@ -1,6 +1,6 @@
 package glfw
 
-// #cgo CPPFLAGS: -I../../dist
+// #cgo CPPFLAGS: -I../../dist/imgui
 // #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 // #define CIMGUI_USE_GLFW
 // #include "../../dist/cimgui.h"

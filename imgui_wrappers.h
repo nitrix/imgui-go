@@ -1,5 +1,5 @@
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS 1
-#include "dist/cimgui.h"
+#include "dist/cimgui/cimgui.h"
 
 void wrap_ImGuiTextBuffer_appendf(ImGuiTextBuffer* self, const char* fmt);
 void wrap_igBulletText(const char* fmt);

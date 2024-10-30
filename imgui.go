@@ -5,12 +5,12 @@ package imgui
 // #cgo CFLAGS: -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1 -Idist/include
 // #cgo linux LDFLAGS: -lm -lc++
 // #cgo darwin LDFLAGS: -framework CoreFoundation -lc++ -framework OpenGL -framework Cocoa -framework IOKit -framework QuartzCore
-// #include "dist/cimgui.h"
+// #include "dist/cimgui/cimgui.h"
 // #include <stdlib.h>
 import "C"
 import (
 	"github.com/go-gl/mathgl/mgl32"
-	_ "github.com/nitrix/imgui-go/dist"
+	_ "github.com/nitrix/imgui-go/dist/cimgui"
 )
 
 // These are from enums.

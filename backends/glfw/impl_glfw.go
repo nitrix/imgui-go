@@ -2,13 +2,12 @@ package glfw
 
 // #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 // #define CIMGUI_USE_GLFW
-// #include "../../dist/cimgui.h"
-// #include "../../dist/cimgui_impl.h"
+// #include "../../dist/cimgui/cimgui.h"
+// #include "../../dist/cimgui/cimgui_impl.h"
 import "C"
 
 import (
 	"github.com/nitrix/glfw-go"
-	_ "github.com/nitrix/imgui-go/dist"
 )
 
 func Init(window *glfw.Window) {

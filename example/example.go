@@ -56,7 +56,6 @@ func main() {
 		gl.Viewport(0, 0, int32(width), int32(height))
 	})
 
-	window.Centerize()
 	window.Show()
 
 	for !window.ShouldClose() {

@@ -83,8 +83,34 @@ func main() {
 		panic(err)
 	}
 
-	copyFile("thirdparty/cimgui/cimgui.h", "dist/include/cimgui/cimgui.h")
-	copyFile("thirdparty/cimgui/cimgui_impl.h", "dist/include/cimgui/cimgui_impl.h")
+	// POC.
+	copyFile("thirdparty/cimgui/cimgui.cpp", "dist/cimgui.cpp")
+	copyFile("thirdparty/cimgui/cimgui.h", "dist/cimgui.h")
+	copyFile("thirdparty/cimgui/cimconfig.h", "dist/cimconfig.h")
+	copyFile("thirdparty/cimgui/generator/output/cimgui_impl.h", "dist/cimgui_impl.h")
+
+	copyFile("thirdparty/cimgui/imgui/imgui.h", "dist/imgui_real.h")
+	copyFile("thirdparty/cimgui/imgui/imconfig.h", "dist/imconfig.h")
+	copyFile("thirdparty/cimgui/imgui/imgui.cpp", "dist/imgui.cpp")
+	copyFile("thirdparty/cimgui/imgui/imgui_internal.h", "dist/imgui_internal.h")
+
+	copyFile("thirdparty/cimgui/imgui/imgui_demo.cpp", "dist/imgui_demo.cpp")
+	copyFile("thirdparty/cimgui/imgui/imgui_draw.cpp", "dist/imgui_draw.cpp")
+	copyFile("thirdparty/cimgui/imgui/imgui_tables.cpp", "dist/imgui_tables.cpp")
+	copyFile("thirdparty/cimgui/imgui/imgui_widgets.cpp", "dist/imgui_widgets.cpp")
+	copyFile("thirdparty/cimgui/imgui/imstb_rectpack.h", "dist/imstb_rectpack.h")
+	copyFile("thirdparty/cimgui/imgui/imstb_textedit.h", "dist/imstb_textedit.h")
+	copyFile("thirdparty/cimgui/imgui/imstb_truetype.h", "dist/imstb_truetype.h")
+
+	copyFile("thirdparty/cimgui/imgui/backends/imgui_impl_glfw.cpp", "backends/glfw/imgui_impl_glfw.cpp")
+	copyFile("thirdparty/cimgui/imgui/backends/imgui_impl_glfw.h", "backends/glfw/imgui_impl_glfw.h")
+
+	copyFile("thirdparty/cimgui/imgui/backends/imgui_impl_opengl3.cpp", "backends/opengl3/imgui_impl_opengl3.cpp")
+	copyFile("thirdparty/cimgui/imgui/backends/imgui_impl_opengl3.h", "backends/opengl3/imgui_impl_opengl3.h")
+	copyFile("thirdparty/cimgui/imgui/backends/imgui_impl_opengl3_loader.h", "backends/opengl3/imgui_impl_opengl3_loader.h")
+
+	copyFile("thirdparty/glfw/include/GLFW/glfw3.h", "dist/GLFW/glfw3.h")
+	copyFile("thirdparty/glfw/include/GLFW/glfw3native.h", "dist/GLFW/glfw3native.h")
 
 	generateConstants(&structsAndEnums)
 	generateTypedefs(typedefsDict)
@@ -93,28 +119,26 @@ func main() {
 	generateWrappersSources(definitions)
 }
 
-func copyFile(src, dst string) error {
+func copyFile(src, dst string) {
 	_ = os.MkdirAll(filepath.Dir(dst), 0750)
 	srcFile, err := os.Open(src)
 	if err != nil {
-		return err
+		panic(err)
 	}
 	defer srcFile.Close()
 
 	dstFile, err := os.Create(dst)
 	if err != nil {
-		return err
+		panic(err)
 	}
 	defer dstFile.Close()
 
 	_, err = srcFile.WriteTo(dstFile)
 	if err != nil {
-		return err
+		panic(err)
 	}
 
 	fmt.Printf("Copied file %s to %s\n", src, dst)
-
-	return nil
 }
 
 func generateConstants(structsAndEnums *structsAndEnumsT) {
@@ -161,7 +185,7 @@ func generateTypedefs(typedefsDict typedefsDictT) {
 	typedefsContent.WriteString("package imgui\n")
 	typedefsContent.WriteString("\n")
 	typedefsContent.WriteString("// #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS 1\n")
-	typedefsContent.WriteString("// #include \"dist/include/cimgui/cimgui.h\"\n")
+	typedefsContent.WriteString("// #include \"dist/cimgui.h\"\n")
 	typedefsContent.WriteString("import \"C\"\n")
 	typedefsContent.WriteString("\n")
 
@@ -406,7 +430,7 @@ func generateDefinitions(definitions definitionsT) {
 	output.WriteString("package imgui\n")
 	output.WriteString("\n")
 	output.WriteString("// #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS 1\n")
-	output.WriteString("// #include \"dist/include/cimgui/cimgui.h\"\n")
+	output.WriteString("// #include \"dist/cimgui.h\"\n")
 	output.WriteString("// #include \"imgui_wrappers.h\"\n")
 	output.WriteString("// #include <stdbool.h>\n")
 	output.WriteString("import \"C\"\n")
@@ -643,7 +667,7 @@ func wrapperPrototypeForDefinition(def definitionT) string {
 func generateWrappersSources(definitions definitionsT) {
 	output := strings.Builder{}
 	output.WriteString("#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS 1\n")
-	output.WriteString("#include \"dist/include/cimgui/cimgui.h\"\n")
+	output.WriteString("#include \"dist/cimgui.h\"\n")
 	output.WriteString("\n")
 
 	sortedDefinitions := make([]definitionT, 0, len(definitions))
@@ -703,7 +727,7 @@ func generateWrappersSources(definitions definitionsT) {
 func generateWrappersHeaders(definitions definitionsT) {
 	output := strings.Builder{}
 	output.WriteString("#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS 1\n")
-	output.WriteString("#include \"dist/include/cimgui/cimgui.h\"\n")
+	output.WriteString("#include \"dist/cimgui.h\"\n")
 	output.WriteString("\n")
 
 	sortedDefinitions := make([]definitionT, 0, len(definitions))

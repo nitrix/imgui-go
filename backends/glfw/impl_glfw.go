@@ -1,6 +1,6 @@
 package glfw
 
-// #cgo CXXFLAGS: -std=c++17
+// #cgo CXXFLAGS: -std=c++17 -O3
 // #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 // #define CIMGUI_USE_GLFW
 // #include "../../dist/cimgui/cimgui.h"

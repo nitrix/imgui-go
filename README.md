@@ -1,6 +1,6 @@
 # imgui-go
 
-A binding for imgui in Go.
+A binding library of imgui for Go.
 
 ## Example
 
